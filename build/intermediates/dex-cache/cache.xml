@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/michaelwaterworth/Documents/android/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.0/libs/internal_impl-22.2.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
+        <dex dex="/Users/michaelwaterworth/Documents/android/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.0-af4304f1422a48deea06f06085c142dfcea1a5d6.jar" />
+    </item>
+    <item
+        jar="/Users/michaelwaterworth/Documents/android/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.0/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
+        <dex dex="/Users/michaelwaterworth/Documents/android/app/build/intermediates/pre-dexed/debug/classes-c3ec52315650065049398fcf6d2456c5e77a6929.jar" />
+    </item>
+    <item
+        jar="/Users/michaelwaterworth/Documents/android/app/build/intermediates/exploded-aar/com.android.support/design/22.2.0/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="fc63b820d54c8a27a3a614bdd93920e0076581c2">
+        <dex dex="/Users/michaelwaterworth/Documents/android/app/build/intermediates/pre-dexed/debug/classes-505489bc339c0e83959e062c96d924d651969d15.jar" />
+    </item>
+    <item
+        jar="/Applications/android-sdk/extras/android/m2repository/com/android/support/support-annotations/22.2.0/support-annotations-22.2.0.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="66b42a1f3eb7676070b7ef7f14b603483aecbee1">
+        <dex dex="/Users/michaelwaterworth/Documents/android/app/build/intermediates/pre-dexed/debug/support-annotations-22.2.0-a4ac619056ec80f97da926e8836243055e42e612.jar" />
+    </item>
+    <item
+        jar="/Users/michaelwaterworth/Documents/android/app/libs/osmdroid-third-party-4.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="f5cb993cc51ebb2be4272559adaf367422968a64">
+        <dex dex="/Users/michaelwaterworth/Documents/android/app/build/intermediates/pre-dexed/debug/osmdroid-third-party-4.1-f3717ce8ca450ae173f7ce74835e7ea177e50d16.jar" />
+    </item>
+    <item
+        jar="/Users/michaelwaterworth/Documents/android/app/libs/ActiveAndroid.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="eedf968704c4b66f1f7acd9e0a27d5abd1c4d35e">
+        <dex dex="/Users/michaelwaterworth/Documents/android/app/build/intermediates/pre-dexed/debug/ActiveAndroid-22d460418f1e0b8e7cf881e87ba8080ec25240bb.jar" />
+    </item>
+    <item
+        jar="/Users/michaelwaterworth/Documents/android/app/libs/slf4j-api-1.7.5.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="04a1c54e213b8a3ae375b7b0ef95791bcac61c71">
+        <dex dex="/Users/michaelwaterworth/Documents/android/app/build/intermediates/pre-dexed/debug/slf4j-api-1.7.5-ee511862dbe9637bc54d0aa31f56dd76fff425bf.jar" />
+    </item>
+    <item
+        jar="/Users/michaelwaterworth/Documents/android/app/libs/osmdroid-android-4.1.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="60913edd9f91f63a5106e3bfc06b2fddda657303">
+        <dex dex="/Users/michaelwaterworth/Documents/android/app/build/intermediates/pre-dexed/debug/osmdroid-android-4.1-df114da5476ec099f306f61bc209a8b5a7633673.jar" />
+    </item>
+    <item
+        jar="/Users/michaelwaterworth/Documents/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
+        <dex dex="/Users/michaelwaterworth/Documents/android/app/build/intermediates/pre-dexed/debug/classes-dfd46eae1c03c4355b462b6ddcebf49fac42482c.jar" />
+    </item>
+
+</items>

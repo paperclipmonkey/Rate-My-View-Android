@@ -1,0 +1,137 @@
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        
+        style="@style/AppTheme"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        tools:context=".TheirViewActivity"
+        android:fillViewport="true"
+        android:orientation="vertical" >
+                
+        
+        <LinearLayout
+	        android:paddingBottom="@dimen/activity_vertical_margin"
+		    android:paddingLeft="@dimen/activity_horizontal_margin"
+		    android:paddingRight="@dimen/activity_horizontal_margin"
+		    android:paddingTop="@dimen/activity_vertical_margin"
+	        android:orientation="vertical"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content">
+    
+		    <ImageView
+		        android:id="@+id/theirImage"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:maxHeight="350dip"
+		        android:minHeight="250dip"
+		        android:contentDescription="Their Image"
+		        android:scaleType="fitCenter" />
+		
+<!-- 		   <RelativeLayout
+		        android:id="@+id/relativeLayout1"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content">
+		        
+			    <com.threeequals.ratemyview.RmVMapView
+			        android:id="@+id/theirmapview"
+			        android:layout_width="100dip"
+			        android:layout_height="100dip"/>
+			    
+			    <TextView
+	                android:id="@+id/theirDistance"
+	                android:layout_gravity="left"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="10 km"
+	                android:textColor="@color/black"
+	                android:textSize="@dimen/title_size_new"/>
+		       
+		  </RelativeLayout> -->
+		        
+			<LinearLayout
+			          android:id="@+id/floatLeft"
+			          android:layout_width="fill_parent"
+			          android:layout_height="wrap_content"
+			          android:orientation="vertical" >
+			          		       	
+			    <TextView
+				   	    android:layout_width="wrap_content"
+				   	    android:layout_height="wrap_content"
+				   	    android:paddingTop="@dimen/activity_vertical_margin"
+				   	    android:text="Rating"
+				   	    android:textSize="@dimen/title_size" />
+			    
+			   	<View android:layout_width="fill_parent" 
+			   	    android:layout_height="1dip"
+			   	    />
+			    
+       		    <TextView
+	                android:id="@+id/theirRating"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content"
+	                android:text="0/5"
+	                android:textSize="@dimen/title_size_new"/>
+			      	
+					<TextView
+				   	    android:layout_marginTop="@dimen/android_padding_text_sides"
+				   	    android:layout_width="wrap_content"
+				   	    android:layout_height="wrap_content"
+				   	    android:text="Words"
+				   	    android:textSize="@dimen/title_size" />
+				   	
+				   	<View android:layout_width="fill_parent" 
+				   	    android:layout_height="1dip"
+				   	    />
+			        
+			      	<TextView
+			            android:id="@+id/theirWords"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text="Word One \nWord Two \nWord Three"/>
+			      
+			      	<TextView
+				   	    android:layout_marginTop="@dimen/android_padding_text_sides"
+				   	    android:layout_width="wrap_content"
+				   	    android:layout_height="wrap_content"
+				   	    android:text="Comments"
+				   	    android:textSize="@dimen/title_size" />
+				   	
+				   	<View android:layout_width="fill_parent" 
+				   	    android:layout_height="1dip"
+				   	    />
+			      		
+			      	<TextView
+			            android:id="@+id/theirComments"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."/>
+			      	
+			      	<TextView
+				   	    android:layout_marginTop="@dimen/android_padding_text_sides"
+				   	    android:layout_width="wrap_content"
+				   	    android:layout_height="wrap_content"
+				   	    android:text="Details"
+				   	    android:textSize="@dimen/title_size" />
+				   	
+				   	<View android:layout_width="fill_parent" 
+				   	    android:layout_height="1dip"
+				   	    />
+				   	
+				   	<TextView
+			      	    android:id="@+id/theirTs"
+		                android:layout_width="fill_parent"
+			      	    android:layout_height="wrap_content"
+			      	    android:text="Uploaded: 01/01/1970"/>
+				   	
+				   	<TextView
+			      	    android:id="@+id/theirHeading"
+		                android:layout_width="fill_parent"
+			      	    android:layout_height="wrap_content"
+			      	    android:text="Heading: 0°"/>
+			      	
+				</LinearLayout>
+	    </LinearLayout>
+
+    </ScrollView>

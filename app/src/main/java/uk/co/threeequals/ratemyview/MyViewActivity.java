@@ -1,4 +1,4 @@
-package com.threeequals.ratemyview;
+package uk.co.threeequals.ratemyview;
 
 import android.net.Uri;
 import android.os.AsyncTask;

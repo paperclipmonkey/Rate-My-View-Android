@@ -1,4 +1,4 @@
-package com.threeequals.ratemyview;
+package uk.co.threeequals.ratemyview;
 
 import java.util.ArrayList;
 import java.util.List;

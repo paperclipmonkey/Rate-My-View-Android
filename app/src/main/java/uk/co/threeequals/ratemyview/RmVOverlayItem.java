@@ -1,4 +1,4 @@
-package com.threeequals.ratemyview;
+package uk.co.threeequals.ratemyview;
 
 import java.io.File;
 import java.io.FileInputStream;

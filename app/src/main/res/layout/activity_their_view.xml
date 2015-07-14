@@ -33,7 +33,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="wrap_content">
 		        
-			    <com.threeequals.ratemyview.RmVMapView
+			    <uk.co.threeequals.ratemyview.RmVMapView
 			        android:id="@+id/theirmapview"
 			        android:layout_width="100dip"
 			        android:layout_height="100dip"/>

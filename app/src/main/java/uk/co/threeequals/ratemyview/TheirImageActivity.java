@@ -1,4 +1,4 @@
-package com.threeequals.ratemyview;
+package uk.co.threeequals.ratemyview;
 
 import android.os.Bundle;
 import android.app.Activity;

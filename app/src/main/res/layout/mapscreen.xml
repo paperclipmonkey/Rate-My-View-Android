@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-            <com.threeequals.ratemyview.RmVMapView
+            <uk.co.threeequals.ratemyview.RmVMapView
                 android:id="@+id/mapview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

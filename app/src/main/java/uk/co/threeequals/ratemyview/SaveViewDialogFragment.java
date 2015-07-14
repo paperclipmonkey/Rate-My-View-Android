@@ -1,4 +1,4 @@
-package com.threeequals.ratemyview;
+package uk.co.threeequals.ratemyview;
 
 import uk.co.threeequals.ratemyview.R;
 import android.annotation.TargetApi;

@@ -1,4 +1,4 @@
-package com.threeequals.ratemyview;
+package uk.co.threeequals.ratemyview;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.views.overlay.MyLocationOverlay;

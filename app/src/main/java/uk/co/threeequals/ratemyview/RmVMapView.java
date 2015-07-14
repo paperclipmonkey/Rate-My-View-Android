@@ -1,4 +1,4 @@
-package com.threeequals.ratemyview;
+package uk.co.threeequals.ratemyview;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;

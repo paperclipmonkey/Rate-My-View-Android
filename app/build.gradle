@@ -19,8 +19,9 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:design:22.2.0'
+//    compile 'ccom.google.android.gms:play-services-maps:7.5.0'
     compile files('libs/ActiveAndroid.jar')
     compile files('libs/osmdroid-android-4.1.jar')
     compile files('libs/osmdroid-third-party-4.1.jar')

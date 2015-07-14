@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import org.osmdroid.tileprovider.MapTileProviderBasic;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,10 +23,7 @@ import android.widget.TextView;
 import uk.co.threeequals.ratemyview.R;
 
 public class TheirViewActivity extends Activity {
-	//private RmVOverlayItem rmvOverlayItem;
-//	private MapTileProviderBasic tileProviderSatellite;
-	//private RmVMapView mMapView;
-	//private ItemizedOverlayWithFocus<RmVOverlayItem> mMyLocationOverlay;
+
 	private String theirImageUri;
 	public ImageView img;
 	
@@ -65,7 +61,6 @@ public class TheirViewActivity extends Activity {
 			new OnClickListener() {           
 				@Override
 				public void onClick(View v) {
-					//System.out.println("Clicked Image");
 						Intent i = new Intent(getBaseContext(), TheirImageActivity.class);
 						if(theirImageUri != null){
 							i.putExtra("Image", theirImageUri);

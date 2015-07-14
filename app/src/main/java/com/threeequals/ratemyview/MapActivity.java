@@ -24,7 +24,20 @@ import org.osmdroid.views.overlay.TilesOverlay;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+
+//import com.google.android.gms.maps.*;
+//import com.google.android.gms.maps.model.*;
+//import android.app.Activity;
+//import android.os.Bundle;
 
 import uk.co.threeequals.ratemyview.R;
 
@@ -36,6 +49,9 @@ public class MapActivity extends AppCompatActivity {
 	private MapTileProviderBasic tileProviderOverlay;
 	private List<RmVOverlayItem> items;
     ItemizedOverlayWithFocus<RmVOverlayItem> overlay;
+
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
 
 	@Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -121,8 +137,42 @@ public class MapActivity extends AppCompatActivity {
 	            }
 	        }
         ,1000));//1000ms timeout
+
+        FloatingActionButton myFab = (FloatingActionButton)  findViewById(R.id.fab);
+        myFab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent myIntent = new Intent(MapActivity.this, MyViewActivity.class);
+                MapActivity.this.startActivity(myIntent);
+            }
+        });
     }
-	
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menuitembutton, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_menu:
+                openMenu();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void openMenu(){
+        DrawerLayout drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer_layout.openDrawer(GravityCompat.START);
+    }
+
 	private void myExceptionHandler(Exception e){
 		
 	}

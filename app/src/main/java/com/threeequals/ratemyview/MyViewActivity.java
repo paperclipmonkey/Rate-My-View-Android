@@ -5,10 +5,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -60,13 +63,12 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.MapTileProviderBasic;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.util.GeoPoint;
 
-public class MyViewActivity extends Activity {
+public class MyViewActivity extends AppCompatActivity {
 
 	private RmVMapView mMapView;
 	private RmVMyLocationOverlay mMyLocationOverlay;
@@ -95,18 +97,7 @@ public class MyViewActivity extends Activity {
         String [] satelliteUrl = {"http://a.tiles.mapbox.com/v3/paperclipmonkey.map-asryj7mr/"};
 		ITileSource tileSourceSatellite = new XYTileSource("Satellite", null, 3, 15, 256, ".png", satelliteUrl);
 		tileProviderSatellite.setTileSource(tileSourceSatellite);
-		
-		mMapView = (RmVMapView) findViewById(R.id.mymapview);
-		mMapView.setTileSource(tileSourceSatellite);
-				
-		mMapView.setBuiltInZoomControls(false);
-		mMapView.setMultiTouchControls(false);
-		mMapView.setClickable(false);
-		IMapController mMapController = mMapView.getController();
-		mMapController.setZoom(12);
-		GeoPoint gPt = new GeoPoint(50.24344,-3.866643);//Center on South Devon AONB area
-		mMapController.setCenter(gPt);
-		setupMyLocation();
+
 		checkForUnsaved();
 	}
 	
@@ -171,19 +162,35 @@ public class MyViewActivity extends Activity {
 //	  int myInt = savedInstanceState.getInt("MyInt");
 //	  String myString = savedInstanceState.getString("MyString");
 	}
-	
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.myviewmenu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                send();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 	@Override
 	public void onPause() {
 		super.onPause();
-		this.mMyLocationOverlay.disableMyLocation();
-        this.mMyLocationOverlay.disableCompass();
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		this.mMyLocationOverlay.enableMyLocation();
-        this.mMyLocationOverlay.enableCompass();
         checkForUnsaved(); 
 	}
 	
@@ -199,9 +206,9 @@ public class MyViewActivity extends Activity {
 		//unSaved.get(0).delete();
 		if(unSaved.size() > 0){//Unsaved views to upload
 			//Show button
-			Button uploadSaved = (Button) findViewById(R.id.saveUpload);
-			uploadSaved.setVisibility(View.VISIBLE);//Turn on upload button
-			uploadSaved.setText(uploadSaved.getText().toString().replace("*num*", "" + unSaved.size()));//Show number in button
+			//Button uploadSaved = (Button) findViewById(R.id.saveUpload);
+			//uploadSaved.setVisibility(View.VISIBLE);//Turn on upload button
+			//uploadSaved.setText(uploadSaved.getText().toString().replace("*num*", "" + unSaved.size()));//Show number in button
 			
 			CompoundButton.OnClickListener uploadSavedEvent = new CompoundButton.OnClickListener() {
 				@Override
@@ -216,29 +223,12 @@ public class MyViewActivity extends Activity {
 			        new PostViewTask().execute(rmvOverlayItem);
 			    }
 			};
-			uploadSaved.setOnClickListener(uploadSavedEvent);
+			//uploadSaved.setOnClickListener(uploadSavedEvent);
 		} else {
-			Button uploadSaved = (Button) findViewById(R.id.saveUpload);
-			uploadSaved.setVisibility(View.GONE);//Turn off upload button
+			//Button uploadSaved = (Button) findViewById(R.id.saveUpload);
+			//uploadSaved.setVisibility(View.GONE);//Turn off upload button
 		}
 	}
-    
-    private void setupMyLocation(){
-        mMyLocationOverlay = new RmVMyLocationOverlay(this, mMapView,
-                mMapView.getResourceProxy());
-        mMyLocationOverlay.enableMyLocation();
-        mMyLocationOverlay.enableCompass();
-        mMyLocationOverlay.enableFollowLocation();
-        mMyLocationOverlay.setDrawAccuracyEnabled(true);
-        mMyLocationOverlay.runOnFirstFix(new Runnable() {
-            public void run() {
-            	System.out.println("Got location");
-            	mMapView.getController().animateTo(mMyLocationOverlay
-                        .getMyLocation());
-            }
-        });
-        mMapView.getOverlays().add(mMyLocationOverlay);
-    }
 	
 	private CompoundButton.OnClickListener getPhotoButtonListener = new CompoundButton.OnClickListener() {
 		@Override
@@ -302,8 +292,8 @@ public class MyViewActivity extends Activity {
 		if(requestCode==11 && resultCode==RESULT_OK){
 			this.resizeImage();
 			//Grab location and heading
-			heading = (long) mMyLocationOverlay.getOrientation();
-			locationObj =  mMyLocationOverlay.getMyLocation();
+			//heading = (long) mMyLocationOverlay.getOrientation();
+			//locationObj =  mMyLocationOverlay.getMyLocation();
 		}
 	}
 	
@@ -381,7 +371,7 @@ public class MyViewActivity extends Activity {
 	
 	//When the send button is clicked
     @SuppressLint("SimpleDateFormat")
-	public void send(View v){
+	public void send(){
     	//get message from message box
     	
 		//make message text field object
@@ -523,7 +513,6 @@ public class MyViewActivity extends Activity {
     
 	@Override
 	public void onDestroy(){
-		mMapView.getTileProvider().clearTileCache();
 		super.onDestroy();
 	}
     

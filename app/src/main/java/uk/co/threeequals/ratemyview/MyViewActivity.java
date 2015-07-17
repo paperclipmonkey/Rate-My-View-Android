@@ -12,9 +12,6 @@ import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -31,9 +28,6 @@ import android.provider.MediaStore;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Matrix;
-
-import uk.co.threeequals.ratemyview.R;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,8 +40,7 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List; 
-
+import java.util.List;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -63,19 +56,11 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osmdroid.tileprovider.MapTileProviderBasic;
-import org.osmdroid.tileprovider.tilesource.ITileSource;
-import org.osmdroid.tileprovider.tilesource.XYTileSource;
-import org.osmdroid.util.GeoPoint;
 
 public class MyViewActivity extends AppCompatActivity {
 
-	private RmVMapView mMapView;
-	private RmVMyLocationOverlay mMyLocationOverlay;
 	private long heading;
 	private RmVOverlayItem rmvOverlayItem;
-	private MapTileProviderBasic tileProviderSatellite;
-	private GeoPoint locationObj;
 	
 	private Uri mImageUri;
 	private ProgressDialog progressDialog;
@@ -85,20 +70,14 @@ public class MyViewActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.myview);
+		setContentView(R.layout.activity_my_view);
 		heading = 0;
 		progressDialog = null;
 		mImageUri = null;
 				
-		Button button = (Button) findViewById(R.id.getImage); 
-		button.setOnClickListener(getPhotoButtonListener);
-		
-		tileProviderSatellite = new MapTileProviderBasic(this);
-        String [] satelliteUrl = {"http://a.tiles.mapbox.com/v3/paperclipmonkey.map-asryj7mr/"};
-		ITileSource tileSourceSatellite = new XYTileSource("Satellite", null, 3, 15, 256, ".png", satelliteUrl);
-		tileProviderSatellite.setTileSource(tileSourceSatellite);
 
-		checkForUnsaved();
+		dispatchTakePictureIntent(11);
+		//checkForUnsaved();
 	}
 	
 	@Override
@@ -112,10 +91,10 @@ public class MyViewActivity extends AppCompatActivity {
 		//}
 		
 		//Coords
-		if(locationObj != null){
-			savedInstanceState.putLong("lat", (long) (locationObj.getLatitudeE6() * 1e6));
-			savedInstanceState.putLong("lng", (long) (locationObj.getLongitudeE6() * 1e6));
-		}
+//		if(locationObj != null){
+//			savedInstanceState.putLong("lat", (long) (locationObj.getLatitudeE6() * 1e6));
+//			savedInstanceState.putLong("lng", (long) (locationObj.getLongitudeE6() * 1e6));
+//		}
 		
 		//image file
 		if(mImageUri != null){
@@ -148,10 +127,10 @@ public class MyViewActivity extends AppCompatActivity {
         }
 
         if(savedInstanceState.containsKey("lat")){//Check if null
-            locationObj = new GeoPoint(
-                savedInstanceState.getDouble("lat"),
-                savedInstanceState.getDouble("lng")
-            );
+//            locationObj = new GeoPoint(
+//                savedInstanceState.getDouble("lat"),
+//                savedInstanceState.getDouble("lng")
+//            );
         }
 
 		//Need to re-setup the image view
@@ -191,51 +170,43 @@ public class MyViewActivity extends AppCompatActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-        checkForUnsaved(); 
+        //checkForUnsaved();
 	}
 	
     protected void onStop(){
     	super.onStop();
-    	tileProviderSatellite.detach();
     }
 	
-	private void checkForUnsaved(){
-		//Check if there are any unsaved views
-		final List<ViewORM> unSaved = ViewORM.getUnsaved();
-		//System.out.println("DB id: " + unSaved.get(0).photoLocation);
-		//unSaved.get(0).delete();
-		if(unSaved.size() > 0){//Unsaved views to upload
-			//Show button
-			//Button uploadSaved = (Button) findViewById(R.id.saveUpload);
-			//uploadSaved.setVisibility(View.VISIBLE);//Turn on upload button
-			//uploadSaved.setText(uploadSaved.getText().toString().replace("*num*", "" + unSaved.size()));//Show number in button
-			
-			CompoundButton.OnClickListener uploadSavedEvent = new CompoundButton.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					//Upload views
-			        //System.out.println(unSaved.get(0));
-			        //System.out.println("Lat: " + unSaved.get(0).lat);
-			        //System.out.println("Lng: " + unSaved.get(0).lng);
-			        rmvOverlayItem = new RmVOverlayItem(unSaved.get(0));
-			        rmvOverlayItem.dbId = unSaved.get(0).photoLocation;
-			        showUploadDialog();
-			        new PostViewTask().execute(rmvOverlayItem);
-			    }
-			};
-			//uploadSaved.setOnClickListener(uploadSavedEvent);
-		} else {
-			//Button uploadSaved = (Button) findViewById(R.id.saveUpload);
-			//uploadSaved.setVisibility(View.GONE);//Turn off upload button
-		}
-	}
-	
-	private CompoundButton.OnClickListener getPhotoButtonListener = new CompoundButton.OnClickListener() {
-		@Override
-		public void onClick(View view) {
-			dispatchTakePictureIntent(11);
-	    }
-	};
+//	private void checkForUnsaved(){
+//		//Check if there are any unsaved views
+//		final List<ViewORM> unSaved = ViewORM.getUnsaved();
+//		//System.out.println("DB id: " + unSaved.get(0).photoLocation);
+//		//unSaved.get(0).delete();
+//		if(unSaved.size() > 0){//Unsaved views to upload
+//			//Show button
+//			//Button uploadSaved = (Button) findViewById(R.id.saveUpload);
+//			//uploadSaved.setVisibility(View.VISIBLE);//Turn on upload button
+//			//uploadSaved.setText(uploadSaved.getText().toString().replace("*num*", "" + unSaved.size()));//Show number in button
+//
+//			CompoundButton.OnClickListener uploadSavedEvent = new CompoundButton.OnClickListener() {
+//				@Override
+//				public void onClick(View view) {
+//					//Upload views
+//			        //System.out.println(unSaved.get(0));
+//			        //System.out.println("Lat: " + unSaved.get(0).lat);
+//			        //System.out.println("Lng: " + unSaved.get(0).lng);
+//			        rmvOverlayItem = new RmVOverlayItem(unSaved.get(0));
+//			        rmvOverlayItem.dbId = unSaved.get(0).photoLocation;
+//			        showUploadDialog();
+//			        new PostViewTask().execute(rmvOverlayItem);
+//			    }
+//			};
+//			//uploadSaved.setOnClickListener(uploadSavedEvent);
+//		} else {
+//			//Button uploadSaved = (Button) findViewById(R.id.saveUpload);
+//			//uploadSaved.setVisibility(View.GONE);//Turn off upload button
+//		}
+//	}
 	
 	public Bitmap getResizedBitmap(Bitmap bm, float newHeight, float newWidth) {
 	    int width = bm.getWidth();
@@ -298,9 +269,6 @@ public class MyViewActivity extends AppCompatActivity {
 	}
 	
 	public void displayImage(){
-		Button button = (Button) findViewById(R.id.getImage);
-		button.setVisibility(View.GONE);//Turn off upload button
-		
 	    ContentResolver cr = this.getContentResolver();
 	    cr.notifyChange(mImageUri, null);
 	    Bitmap mImageBitmap;
@@ -427,12 +395,12 @@ public class MyViewActivity extends AppCompatActivity {
 		imageLoc = mImageUri.getPath();
 		
 		//ensure locationObj is set
-		if(locationObj == null){
-            Toast.makeText(getBaseContext(),"Location could not be acquired",Toast.LENGTH_SHORT).show();
-            return;
-		}
+//		if(locationObj == null){
+//            Toast.makeText(getBaseContext(),"Location could not be acquired",Toast.LENGTH_SHORT).show();
+//            return;
+//		}
         
-        rmvOverlayItem = new RmVOverlayItem("","", locationObj);
+ //       rmvOverlayItem = new RmVOverlayItem("","", locationObj);
         rmvOverlayItem.setComments(comments);
         rmvOverlayItem.setWords(new String[]{wordOne, wordTwo, wordThree});
         rmvOverlayItem.setAge(age);
@@ -518,8 +486,8 @@ public class MyViewActivity extends AppCompatActivity {
     
     public void saveView(RmVOverlayItem iRmvOverlayItem){
 		System.out.println("Saving View");
-		ViewORM entity = new ViewORM(iRmvOverlayItem);
-		entity.save();//Save object to DB
+	//	ViewORM entity = new ViewORM(iRmvOverlayItem);
+	//	entity.save();//Save object to DB
         Toast.makeText(getBaseContext(), "View saved locally", Toast.LENGTH_LONG).show();
     }
     
@@ -548,7 +516,7 @@ public class MyViewActivity extends AppCompatActivity {
             
             if(rmvOverlayItem.fromDB){//Item was from Database
                 //Try and remove View from DB if it was previously saved
-            	ViewORM.Del(rmvOverlayItem.dbId);
+            	//ViewORM.Del(rmvOverlayItem.dbId);
                 //ViewORM.delete(null, rmvOverlayItem.dbId);//ID of view in DB
             }
             
@@ -624,8 +592,8 @@ public class MyViewActivity extends AppCompatActivity {
 				nameValuePairs.add(new BasicNameValuePair("rating", "" + myView.getRating()));
 				nameValuePairs.add(new BasicNameValuePair("photo", "" + myView.getPhotoData()));
 				nameValuePairs.add(new BasicNameValuePair("heading", "" + myView.getHeading()));
-				nameValuePairs.add(new BasicNameValuePair("lat", "" + myView.getLat()));
-				nameValuePairs.add(new BasicNameValuePair("lng", "" + myView.getLng()));
+			//	nameValuePairs.add(new BasicNameValuePair("lat", "" + myView.getLat()));
+			//	nameValuePairs.add(new BasicNameValuePair("lng", "" + myView.getLng()));
                 nameValuePairs.add(new BasicNameValuePair("words[]", myView.getWords()[0]));
                 nameValuePairs.add(new BasicNameValuePair("words[]", myView.getWords()[1]));
                 nameValuePairs.add(new BasicNameValuePair("words[]", myView.getWords()[2]));

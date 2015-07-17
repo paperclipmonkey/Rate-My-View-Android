@@ -1,11 +1,10 @@
 package uk.co.threeequals.ratemyview;
 
 import android.os.Bundle;
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 
-import uk.co.threeequals.ratemyview.R;
-
-public class AboutActivity extends Activity {
+public class AboutActivity extends AppCompatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -18,4 +17,5 @@ public class AboutActivity extends Activity {
 		super.onPause();
 		finish();//Free up memory
 	}
+
 }

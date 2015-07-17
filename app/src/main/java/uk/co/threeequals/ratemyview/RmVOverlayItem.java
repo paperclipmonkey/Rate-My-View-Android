@@ -5,14 +5,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.OverlayItem;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Base64;
 
-public class RmVOverlayItem extends OverlayItem implements Parcelable{
+public class RmVOverlayItem implements Parcelable{
 	private String id;
 	private String photo;
 	private String age;
@@ -30,58 +27,58 @@ public class RmVOverlayItem extends OverlayItem implements Parcelable{
 	private String tsVague;
 	private String photoData;
 		
-	public RmVOverlayItem(String aTitle, String aDescription,
-	GeoPoint aGeoPoint) {
-		super(aTitle, aDescription, aGeoPoint);
-		fromDB = false;
-	}
+//	public RmVOverlayItem(String aTitle, String aDescription,
+//	GeoPoint aGeoPoint) {
+//		//super(aTitle, aDescription, aGeoPoint);
+//		fromDB = false;
+//	}
 	
-	public RmVOverlayItem(ViewORM savedObj) {
-		super("", "", new GeoPoint(Double.parseDouble(savedObj.lat), Double.parseDouble(savedObj.lng)));
-		//savedObj.
-		//Fill out the object using values from the Passed in Object
-		age = savedObj.age;
-		comments = savedObj.comments;
-		heading = savedObj.heading;
-		ts = savedObj.ts;
-		rating = savedObj.rating;
-		words = new String[]{savedObj.word1, savedObj.word2, savedObj.word3};
-		know = savedObj.know;
-		time = savedObj.time;
-		nonce = savedObj.nonce;
-		fromDB = true;
-		
-		photoLocation = savedObj.photoLocation;
-		File imgFile = new File(photoLocation);
-		//System.out.println("Photo location: " + photoLocation);
-		if(imgFile.exists()){
-			//System.out.println("Image exists");
-			try {
-				FileInputStream fin = new FileInputStream(imgFile.getAbsolutePath());
-				byte fileContent[] = new byte[(int)imgFile.length()];
-				// Reads up to certain bytes of data from this input stream into an array of bytes.
-				fin.read(fileContent);
-				//System.out.println("Read file");
-
-				fin.close();
-				photoData = Base64.encodeToString(fileContent, Base64.DEFAULT);
-			} catch (FileNotFoundException e) {
-				System.out.println("Cannot find image");
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				System.out.println("IO exception");
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}		 
-			
-
-			//img.setImageBitmap(myBitmap);
-		} else {
-			System.out.println("Cannot find image");
-			//TODO - Add throw?
-		}
-	}
+//	public RmVOverlayItem(Object savedObj) {
+//		//super("", "", new GeoPoint(Double.parseDouble(savedObj.lat), Double.parseDouble(savedObj.lng)));
+//		//savedObj.
+//		//Fill out the object using values from the Passed in Object
+//		age = savedObj.age;
+//		comments = savedObj.comments;
+//		heading = savedObj.heading;
+//		ts = savedObj.ts;
+//		rating = savedObj.rating;
+//		words = new String[]{savedObj.word1, savedObj.word2, savedObj.word3};
+//		know = savedObj.know;
+//		time = savedObj.time;
+//		nonce = savedObj.nonce;
+//		fromDB = true;
+//
+//		photoLocation = savedObj.photoLocation;
+//		File imgFile = new File(photoLocation);
+//		//System.out.println("Photo location: " + photoLocation);
+//		if(imgFile.exists()){
+//			//System.out.println("Image exists");
+//			try {
+//				FileInputStream fin = new FileInputStream(imgFile.getAbsolutePath());
+//				byte fileContent[] = new byte[(int)imgFile.length()];
+//				// Reads up to certain bytes of data from this input stream into an array of bytes.
+//				fin.read(fileContent);
+//				//System.out.println("Read file");
+//
+//				fin.close();
+//				photoData = Base64.encodeToString(fileContent, Base64.DEFAULT);
+//			} catch (FileNotFoundException e) {
+//				System.out.println("Cannot find image");
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				System.out.println("IO exception");
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//
+//			//img.setImageBitmap(myBitmap);
+//		} else {
+//			System.out.println("Cannot find image");
+//			//TODO - Add throw?
+//		}
+//	}
 	
 	public void setId(String aId){
 		id = aId;
@@ -184,14 +181,14 @@ public class RmVOverlayItem extends OverlayItem implements Parcelable{
 		return time;
 	}
 	
-	public Float getLat(){
-		return (float) (this.getPoint().getLatitudeE6() / 1E6);
-	}
-	
-	public Float getLng(){
-		return (float) (this.getPoint().getLongitudeE6() / 1E6);
-	}
-	
+//	public Float getLat(){
+//		return (float) (this.getPoint().getLatitudeE6() / 1E6);
+//	}
+//
+//	public Float getLng(){
+//		return (float) (this.getPoint().getLongitudeE6() / 1E6);
+//	}
+//
 
 	@Override
 	public int describeContents() {
@@ -228,7 +225,7 @@ public class RmVOverlayItem extends OverlayItem implements Parcelable{
 	};
 
 	private RmVOverlayItem(Parcel in) {
-		super("", "", new GeoPoint(0, 0));
+		//super("", "", new GeoPoint(0, 0));
 		id = in.readString();
 		photo = in.readString();
 		age = in.readString();

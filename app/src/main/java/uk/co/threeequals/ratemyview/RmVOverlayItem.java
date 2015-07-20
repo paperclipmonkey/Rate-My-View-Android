@@ -9,6 +9,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Base64;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class RmVOverlayItem implements Parcelable{
 	private String id;
 	private String photo;
@@ -27,11 +29,11 @@ public class RmVOverlayItem implements Parcelable{
 	private String tsVague;
 	private String photoData;
 		
-//	public RmVOverlayItem(String aTitle, String aDescription,
-//	GeoPoint aGeoPoint) {
-//		//super(aTitle, aDescription, aGeoPoint);
-//		fromDB = false;
-//	}
+	public RmVOverlayItem(String aTitle, String aDescription,
+						  LatLng aGeoPoint) {
+		//super(aTitle, aDescription, aGeoPoint);
+		fromDB = false;
+	}
 	
 //	public RmVOverlayItem(Object savedObj) {
 //		//super("", "", new GeoPoint(Double.parseDouble(savedObj.lat), Double.parseDouble(savedObj.lng)));

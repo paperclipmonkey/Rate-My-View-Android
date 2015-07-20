@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListView android:id="@+id/navigation_drawer"
-        android:layout_width="240dp"
+
+    <LinearLayout
+        android:id="@+id/navigation_drawer"
         android:layout_height="match_parent"
+        android:layout_width="240dp"
         android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:background="#111"/>
+        android:background="#111"
+        android:orientation="vertical" >
+
+        <ListView android:id="@+id/navigation_drawer_list"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
+            android:layout_width="match_parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="11 uploads waiting"
+            android:textColor="#fff"
+            android:id="@+id/navigation_drawer_text" />
+    </LinearLayout>
 </merge>

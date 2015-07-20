@@ -74,9 +74,10 @@ public class MyViewActivity extends AppCompatActivity {
 		heading = 0;
 		progressDialog = null;
 		mImageUri = null;
-				
 
-		dispatchTakePictureIntent(11);
+        if(savedInstanceState == null || savedInstanceState.getString("image") == null) {//Check if null
+            dispatchTakePictureIntent(11);
+        }
 		//checkForUnsaved();
 	}
 	
@@ -228,7 +229,7 @@ public class MyViewActivity extends AppCompatActivity {
 	    matrix.postScale(scaleWidth, scaleHeight);
 
 	    // "RECREATE" THE NEW BITMAP
-	    return Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
+        return Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
 	}
 	
 	private File createTemporaryFile(String part, String ext) throws Exception{
@@ -265,6 +266,8 @@ public class MyViewActivity extends AppCompatActivity {
 			//Grab location and heading
 			//heading = (long) mMyLocationOverlay.getOrientation();
 			//locationObj =  mMyLocationOverlay.getMyLocation();
+		} else {
+			finish();//Return to previous activity
 		}
 	}
 	
@@ -276,8 +279,6 @@ public class MyViewActivity extends AppCompatActivity {
     	try {
 			mImageBitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
 	    	mImageView.setImageBitmap(mImageBitmap);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,11 +15,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.alexbbb.uploadservice.AbstractUploadServiceReceiver;
+import com.alexbbb.uploadservice.UploadService;
+
 public class BaseActivity extends AppCompatActivity {
     ListView mDrawerList;
     DrawerLayout mDrawerLayout;
+    String TAGLISTEN = "RmVUploadListener";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        UploadService.NAMESPACE = getString(R.string.upload_namespace);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_fragment);
 
@@ -80,9 +87,50 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        uploadReceiver.register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        uploadReceiver.unregister(this);
+    }
+
     private void openMenu(){
         DrawerLayout drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer_layout.openDrawer(GravityCompat.START);
     }
+
+    private final AbstractUploadServiceReceiver uploadReceiver =
+        new AbstractUploadServiceReceiver() {
+
+            @Override
+            public void onProgress(String uploadId, int progress) {
+                Log.i(TAGLISTEN, "The progress of the upload with ID "
+                        + uploadId + " is: " + progress);
+            }
+
+            @Override
+            public void onError(String uploadId, Exception exception) {
+                Log.e(TAGLISTEN, "Error in upload with ID: " + uploadId + ". "
+                        + exception.getLocalizedMessage(), exception);
+            }
+
+            @Override
+            public void onCompleted(String uploadId,
+                                    int serverResponseCode,
+                                    String serverResponseMessage) {
+                Log.i(TAGLISTEN, "Upload with ID " + uploadId
+                        + " has been completed with HTTP " + serverResponseCode
+                        + ". Response from server: " + serverResponseMessage);
+
+                //If your server responds with a JSON, you can parse it
+                //from serverResponseMessage string using a library
+                //such as org.json (embedded in Android) or google's gson
+            }
+        };
 }
 

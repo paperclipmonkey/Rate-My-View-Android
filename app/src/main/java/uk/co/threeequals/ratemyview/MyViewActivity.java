@@ -1,5 +1,10 @@
 package uk.co.threeequals.ratemyview;
 
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +14,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +34,11 @@ import android.provider.MediaStore;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Matrix;
+
+import com.alexbbb.uploadservice.UploadRequest;
+import com.alexbbb.uploadservice.UploadService;
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -65,11 +76,18 @@ public class MyViewActivity extends AppCompatActivity {
 	private Uri mImageUri;
 	private ProgressDialog progressDialog;
 	private AlertDialog alertDialog;
+    private LatLng position;
+    LocationManager locationManager;
 
-	@Override
+
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
+		UploadService.NAMESPACE = getString(R.string.upload_namespace);
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
 		setContentView(R.layout.activity_my_view);
 		heading = 0;
 		progressDialog = null;
@@ -101,15 +119,6 @@ public class MyViewActivity extends AppCompatActivity {
 		if(mImageUri != null){
 			savedInstanceState.putString("image", mImageUri.toString());
 		}
-
-	  // Save UI state changes to the savedInstanceState.
-	  // This bundle will be passed to onCreate if the process is
-	  // killed and restarted.
-//	  savedInstanceState.putBoolean("MyBoolean", true);
-//	  savedInstanceState.putDouble("myDouble", 1.9);
-//	  savedInstanceState.putInt("MyInt", 1);
-//	  savedInstanceState.putString("MyString", "Welcome back to Android");
-	  // etc.
 	}
 	
 	@Override
@@ -133,14 +142,6 @@ public class MyViewActivity extends AppCompatActivity {
 //                savedInstanceState.getDouble("lng")
 //            );
         }
-
-		//Need to re-setup the image view
-	  // Restore UI state from the savedInstanceState.
-	  // This bundle has also been passed to onCreate.
-//	  boolean myBoolean = savedInstanceState.getBoolean("MyBoolean");
-//	  double myDouble = savedInstanceState.getDouble("myDouble");
-//	  int myInt = savedInstanceState.getInt("MyInt");
-//	  String myString = savedInstanceState.getString("MyString");
 	}
 
     @Override
@@ -246,16 +247,16 @@ public class MyViewActivity extends AppCompatActivity {
 	    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 	    File photo;
 	    try {
-	        // place where to store camera taken picture
+	        // location to store photo taken
 	        photo = this.createTemporaryFile("picture", ".jpg");
 	        photo.delete();
 	    } catch(Exception e) {
-	        //Log.v(TAG, "Can't create file to take picture!");
 	        Toast.makeText(getBaseContext(), "Please check SD card! Image shot is impossible!", Toast.LENGTH_LONG).show();
 	        return;
 	    }
 	    mImageUri = Uri.fromFile(photo);
 	    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+
 	    //start camera intent
 	    startActivityForResult(takePictureIntent, actionCode);
 	}
@@ -263,6 +264,7 @@ public class MyViewActivity extends AppCompatActivity {
 	protected void onActivityResult (int requestCode, int resultCode, Intent data){
 		if(requestCode==11 && resultCode==RESULT_OK){
 			this.resizeImage();
+            determineLocationExif();
 			//Grab location and heading
 			//heading = (long) mMyLocationOverlay.getOrientation();
 			//locationObj =  mMyLocationOverlay.getMyLocation();
@@ -337,7 +339,127 @@ public class MyViewActivity extends AppCompatActivity {
 		}
 		return null;
 	}
-	
+
+    public void upload(RmVOverlayItem rmvOverlayItem) {
+        final UploadRequest request = new UploadRequest(getApplicationContext(),
+                "custom-upload-id",
+                "http://www.ratemyview.co.uk/views/");
+
+    /*
+     * parameter-name: is the name of the parameter that will contain file's data.
+     * Pass "uploaded_file" if you're using the test PHP script
+     *
+     * custom-file-name.extension: is the file name seen by the server.
+     * E.g. value of $_FILES["uploaded_file"]["name"] of the test PHP script
+     */
+        request.addFileToUpload(mImageUri.getPath(),
+                "parameter-name",
+                "custom-file-name.extension",
+                "content-type");
+
+        //You can add your own custom headers
+//        request.addHeader("your-custom-header", "your-custom-value");
+
+        //and parameters
+        request.addParameter("comments", rmvOverlayItem.getComments());
+        request.addArrayParameter("words", rmvOverlayItem.getWords());
+        request.addParameter("age", rmvOverlayItem.getAge());
+        request.addParameter("know", rmvOverlayItem.getKnow());
+        request.addParameter("rating", "" + rmvOverlayItem.getRating());
+        request.addParameter("heading", "" + rmvOverlayItem.getHeading());
+
+//        //If you want to add a parameter with multiple values, you can do the following:
+//        request.addParameter("array-parameter-name", "value1");
+//        request.addParameter("array-parameter-name", "value2");
+//        request.addParameter("array-parameter-name", "valueN");
+//
+//        //or
+//        String[] values = new String[] {"value1", "value2", "valueN"};
+//        request.addArrayParameter("array-parameter-name", values);
+
+//        //or
+//        List<String> valuesList = new ArrayList<String>();
+//        valuesList.add("value1");
+//        valuesList.add("value2");
+//        valuesList.add("valueN");
+//        request.addArrayParameter("array-parameter-name", valuesList);
+
+        //configure the notification
+        request.setNotificationConfig(android.R.drawable.ic_menu_upload,
+                "Rate my View",
+                "uploading view...",
+                "upload completed successfully text",
+                "upload error text",
+                false);
+
+        // set a custom user agent string for the upload request
+        // if you comment the following line, the system default user-agent will be used
+        request.setCustomUserAgent("RmVAndroid");
+
+        // set the intent to perform when the user taps on the upload notification.
+        // currently tested only with intents that launches an activity
+        // if you comment this line, no action will be performed when the user taps on the notification
+        request.setNotificationClickIntent(new Intent(getApplicationContext(), BaseActivity.class));
+
+        try {
+            //Start upload service and display the notification
+            UploadService.startUpload(request);
+
+        } catch (Exception exc) {
+            //You will end up here only if you pass an incomplete UploadRequest
+            Log.e("AndroidUploadService", exc.getLocalizedMessage(), exc);
+        }
+    }
+
+    private void determineLocationExif(){
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(mImageUri.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        float[] latLong = new float[2];
+        if (exif.getLatLong(latLong)) {
+            Log.d("Location", "Location set by Photo");
+            position = new LatLng(latLong[0], latLong[1]);
+        } else {
+            determineLocationGps();//Get position from GPS
+        }
+    }
+
+    private void determineLocationGps(){
+        //Check for stale location data first
+        String locationProvider = LocationManager.GPS_PROVIDER;
+        Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+        if(
+            lastKnownLocation.getTime() < new Date().getTime() + (1000 *45)//Less than 45 seconds old
+            && lastKnownLocation.getAccuracy() < 50//Accuracy
+        ){
+            Log.d("Accurary", "" + lastKnownLocation.getAccuracy());
+            position = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        } else {
+            // Register the listener with the Location Manager to receive location updates
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        }
+    }
+
+    LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            // Called when a new location is found by the network location provider.
+            if(location.getAccuracy() < 50){
+                Log.d("Location", "Location set by GPS Listener");
+                Log.d("Accurary", "" + location.getAccuracy());
+                position = new LatLng(location.getLatitude(), location.getLongitude());
+            }
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+        public void onProviderEnabled(String provider) {}
+
+        public void onProviderDisabled(String provider) {}
+    };
+
 	//When the send button is clicked
     @SuppressLint("SimpleDateFormat")
 	public void send(){
@@ -396,12 +518,12 @@ public class MyViewActivity extends AppCompatActivity {
 		imageLoc = mImageUri.getPath();
 		
 		//ensure locationObj is set
-//		if(locationObj == null){
-//            Toast.makeText(getBaseContext(),"Location could not be acquired",Toast.LENGTH_SHORT).show();
-//            return;
-//		}
-        
- //       rmvOverlayItem = new RmVOverlayItem("","", locationObj);
+		if(position == null){
+            Toast.makeText(getBaseContext(),"Location could not be acquired",Toast.LENGTH_SHORT).show();
+            return;
+		}
+
+        rmvOverlayItem = new RmVOverlayItem("","", new LatLng(position.latitude, position.longitude));
         rmvOverlayItem.setComments(comments);
         rmvOverlayItem.setWords(new String[]{wordOne, wordTwo, wordThree});
         rmvOverlayItem.setAge(age);
@@ -421,221 +543,222 @@ public class MyViewActivity extends AppCompatActivity {
         rmvOverlayItem.setNonce(nonce);
 
 
-        showUploadDialog();
-        new PostViewTask().execute(rmvOverlayItem);
+//        showUploadDialog();
+//        new PostViewTask().execute(rmvOverlayItem);
+        upload(rmvOverlayItem);
     }
     
-    private void showUploadDialog(){
-		progressDialog = new ProgressDialog(this);
-		progressDialog.setMessage("Sending\nPlease wait..");
-		progressDialog.setCancelable(false);
-		progressDialog.setIndeterminate(true);
-		progressDialog.show();
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);//Lock screen rotation
-    }
+//    private void showUploadDialog(){
+//		progressDialog = new ProgressDialog(this);
+//		progressDialog.setMessage("Sending\nPlease wait..");
+//		progressDialog.setCancelable(false);
+//		progressDialog.setIndeterminate(true);
+//		progressDialog.show();
+//		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);//Lock screen rotation
+//    }
     
-    private void hideUploadDialog(){
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);//Unlock screen rotation
-        progressDialog.cancel();
-    }
+//    private void hideUploadDialog(){
+//		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);//Unlock screen rotation
+//        progressDialog.cancel();
+//    }
+//
+//    private void reloadView(){
+//    	Intent intent = new Intent(this, MyViewActivity.class);
+//    	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//Don't show up in history //FLAG_ACTIVITY_CLEAR_TOP
+//     	this.startActivity(intent);
+//    }
     
-    private void reloadView(){
-    	Intent intent = new Intent(this, MyViewActivity.class);
-    	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//Don't show up in history //FLAG_ACTIVITY_CLEAR_TOP
-     	this.startActivity(intent);
-    }
-    
-    private void showSaveDialog(){
-    	OnClickListener save = new DialogInterface.OnClickListener() {
-    	    public void onClick(DialogInterface dialog, int which) {
-    	    	System.out.println("Saving view");
-    	    	saveView(rmvOverlayItem);
-    	    	hideSaveDialog();
-    	    	reloadView();
-    	    }
-    	};
-    	
-    	OnClickListener cancel = new DialogInterface.OnClickListener() {
-    		public void onClick(DialogInterface dialog, int which) {
-    	    	System.out.println("Discarding view");
-    	    	hideSaveDialog();
-    	    	reloadView();
-    		}
-    	};
-    	
-    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//    private void showSaveDialog(){
+//    	OnClickListener save = new DialogInterface.OnClickListener() {
+//    	    public void onClick(DialogInterface dialog, int which) {
+//    	    	System.out.println("Saving view");
+//    	    	saveView(rmvOverlayItem);
+//    	    	hideSaveDialog();
+//    	    	reloadView();
+//    	    }
+//    	};
+//
+//    	OnClickListener cancel = new DialogInterface.OnClickListener() {
+//    		public void onClick(DialogInterface dialog, int which) {
+//    	    	System.out.println("Discarding view");
+//    	    	hideSaveDialog();
+//    	    	reloadView();
+//    		}
+//    	};
+//
+//    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//
+//    	// 2. Chain together various setter methods to set the dialog characteristics
+//    	builder.setMessage(R.string.save_message)
+//    	       .setTitle(R.string.save_title)
+//    	       .setPositiveButton(R.string.save_view, save)
+//    	       .setNegativeButton(R.string.cancel, cancel);
+//
+//    	// 3. Get the AlertDialog from create()
+//    	alertDialog = builder.create();
+//    	alertDialog.show();
+//    }
 
-    	// 2. Chain together various setter methods to set the dialog characteristics
-    	builder.setMessage(R.string.save_message)
-    	       .setTitle(R.string.save_title)
-    	       .setPositiveButton(R.string.save_view, save)
-    	       .setNegativeButton(R.string.cancel, cancel);
-
-    	// 3. Get the AlertDialog from create()
-    	alertDialog = builder.create();
-    	alertDialog.show();
-    }
-    
-    private void hideSaveDialog(){
-    	alertDialog.dismiss();
-    }
+//    private void hideSaveDialog(){
+//    	alertDialog.dismiss();
+//    }
     
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
 	}
     
-    public void saveView(RmVOverlayItem iRmvOverlayItem){
-		System.out.println("Saving View");
-	//	ViewORM entity = new ViewORM(iRmvOverlayItem);
-	//	entity.save();//Save object to DB
-        Toast.makeText(getBaseContext(), "View saved locally", Toast.LENGTH_LONG).show();
-    }
+//    public void saveView(RmVOverlayItem iRmvOverlayItem){
+//		System.out.println("Saving View");
+//	//	ViewORM entity = new ViewORM(iRmvOverlayItem);
+//	//	entity.save();//Save object to DB
+//        Toast.makeText(getBaseContext(), "View saved locally", Toast.LENGTH_LONG).show();
+//    }
     
-    public void postCallback(String data){
-    	hideUploadDialog();
-    	if(data == null){//Failed request
-    		if(rmvOverlayItem.dbId != null){
-    	        Toast.makeText(getBaseContext(), "Could not upload saved", Toast.LENGTH_LONG).show();
-    			return;
-    		} else {
-    			showSaveDialog();
-    			return;
-    		}
-    	}
-    	//Check to see if String will parse
-    	//Get ID and Photo url from entity
-    	try {
-            // A Simple JSONArray Creation
-            JSONObject json = new JSONObject(data);
-            //System.out.println("Id: " + json.getString("id"));
-            
-            String photo = json.getString("photo");
-            rmvOverlayItem.setPhoto(photo);
-            
-            rmvOverlayItem.setId(json.getString("id"));
-            
-            if(rmvOverlayItem.fromDB){//Item was from Database
-                //Try and remove View from DB if it was previously saved
-            	//ViewORM.Del(rmvOverlayItem.dbId);
-                //ViewORM.delete(null, rmvOverlayItem.dbId);//ID of view in DB
-            }
-            
-	        Toast.makeText(getBaseContext(), "View submitted successfully", Toast.LENGTH_LONG).show();
-	    	Intent intent = new Intent(this, TheirViewActivity.class);
-	    	intent.putExtra("object", rmvOverlayItem);//Item will be new RmVOverlayItem
-	    	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//Don't show up in history
-	     	this.startActivity(intent);
-    	} catch (JSONException e) {
-    		System.out.println("Failed to parse Object as JSON");
-			e.printStackTrace();
-			showSaveDialog();
-		}
-    }
+//    public void postCallback(String data){
+//    	hideUploadDialog();
+//    	if(data == null){//Failed request
+//    		if(rmvOverlayItem.dbId != null){
+//    	        Toast.makeText(getBaseContext(), "Could not upload saved", Toast.LENGTH_LONG).show();
+//    			return;
+//    		} else {
+//    			showSaveDialog();
+//    			return;
+//    		}
+//    	}
+//    	//Check to see if String will parse
+//    	//Get ID and Photo url from entity
+//    	try {
+//            // A Simple JSONArray Creation
+//            JSONObject json = new JSONObject(data);
+//            //System.out.println("Id: " + json.getString("id"));
+//
+//            String photo = json.getString("photo");
+//            rmvOverlayItem.setPhoto(photo);
+//
+//            rmvOverlayItem.setId(json.getString("id"));
+//
+//            if(rmvOverlayItem.fromDB){//Item was from Database
+//                //Try and remove View from DB if it was previously saved
+//            	//ViewORM.Del(rmvOverlayItem.dbId);
+//                //ViewORM.delete(null, rmvOverlayItem.dbId);//ID of view in DB
+//            }
+//
+//	        Toast.makeText(getBaseContext(), "View submitted successfully", Toast.LENGTH_LONG).show();
+//	    	Intent intent = new Intent(this, TheirViewActivity.class);
+//	    	intent.putExtra("object", rmvOverlayItem);//Item will be new RmVOverlayItem
+//	    	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//Don't show up in history
+//	     	this.startActivity(intent);
+//    	} catch (JSONException e) {
+//    		System.out.println("Failed to parse Object as JSON");
+//			e.printStackTrace();
+//			showSaveDialog();
+//		}
+//    }
     
-    private class PostViewTask extends AsyncTask<RmVOverlayItem, Integer, String> {
-    	private String convertStreamToString(InputStream is) {
-            /*
-             * To convert the InputStream to String we use the BufferedReader.readLine()
-             * method. We iterate until the BufferedReader return null which means
-             * there's no more data to read. Each line will appended to a StringBuilder
-             * and returned as String.
-             */
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            StringBuilder sb = new StringBuilder();
-     
-            String line;
-            try {
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-     
-            return sb.toString();
-        }
+//    private class PostViewTask extends AsyncTask<RmVOverlayItem, Integer, String> {
+//    	private String convertStreamToString(InputStream is) {
+//            /*
+//             * To convert the InputStream to String we use the BufferedReader.readLine()
+//             * method. We iterate until the BufferedReader return null which means
+//             * there's no more data to read. Each line will appended to a StringBuilder
+//             * and returned as String.
+//             */
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+//            StringBuilder sb = new StringBuilder();
+//
+//            String line;
+//            try {
+//                while ((line = reader.readLine()) != null) {
+//                    sb.append(line + "\n");
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } finally {
+//                try {
+//                    is.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            return sb.toString();
+//        }
     	
-        protected String doInBackground(RmVOverlayItem... item) {
-        	RmVOverlayItem myView = item[0];
-            try {
-            	
-            	PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            	int versionNumber = pinfo.versionCode;
-            	String versionName = pinfo.versionName;
-            	
-            	System.out.println("Submitting View");
-          	  	
-            	final HttpParams httpParams = new BasicHttpParams();
-                HttpConnectionParams.setConnectionTimeout(httpParams, 30000);
-                HttpConnectionParams.setSoTimeout(httpParams, 30000);
-                HttpClient httpclient = new DefaultHttpClient(httpParams);
-                HttpPost httppost = new HttpPost(getString(R.string.base_url) + "view/");
+//        protected String doInBackground(RmVOverlayItem... item) {
+//        	RmVOverlayItem myView = item[0];
+//            try {
+//
+//            	PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+//            	int versionNumber = pinfo.versionCode;
+//            	String versionName = pinfo.versionName;
+//
+//            	System.out.println("Submitting View");
+//
+//            	final HttpParams httpParams = new BasicHttpParams();
+//                HttpConnectionParams.setConnectionTimeout(httpParams, 30000);
+//                HttpConnectionParams.setSoTimeout(httpParams, 30000);
+//                HttpClient httpclient = new DefaultHttpClient(httpParams);
+//                HttpPost httppost = new HttpPost(getString(R.string.base_url) + "view/");
+//
+//                List<NameValuePair> nameValuePairs = new ArrayList<>(2);
+//
+//                //Send device information along with the View
+//				nameValuePairs.add(new BasicNameValuePair("appVersion", versionNumber + ""));
+//				nameValuePairs.add(new BasicNameValuePair("appOS", "Android"));
+//
+//
+//				nameValuePairs.add(new BasicNameValuePair("nonce", myView.getNonce()));
+//
+//				nameValuePairs.add(new BasicNameValuePair("comments", myView.getComments()));
+//				nameValuePairs.add(new BasicNameValuePair("age", myView.getAge()));
+//				nameValuePairs.add(new BasicNameValuePair("knowarea", myView.getKnow()));
+//				nameValuePairs.add(new BasicNameValuePair("rating", "" + myView.getRating()));
+//				nameValuePairs.add(new BasicNameValuePair("photo", "" + myView.getPhotoData()));
+//				nameValuePairs.add(new BasicNameValuePair("heading", "" + myView.getHeading()));
+//			//	nameValuePairs.add(new BasicNameValuePair("lat", "" + myView.getLat()));
+//			//	nameValuePairs.add(new BasicNameValuePair("lng", "" + myView.getLng()));
+//                nameValuePairs.add(new BasicNameValuePair("words[]", myView.getWords()[0]));
+//                nameValuePairs.add(new BasicNameValuePair("words[]", myView.getWords()[1]));
+//                nameValuePairs.add(new BasicNameValuePair("words[]", myView.getWords()[2]));
+//                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+//                HttpResponse resp = httpclient.execute(httppost);
+//                HttpEntity entity = resp.getEntity();
+//                //Read input to String
+//                StatusLine status = resp.getStatusLine();
+//
+//                if(status.getStatusCode() != 200){
+//                	return null;
+//                }
+//
+//                if (entity != null) {
+//                	// A Simple Response Read
+//                    InputStream instream = entity.getContent();
+//                    String result = convertStreamToString(instream);
+//                    // Closing the input stream will trigger connection release
+//                    instream.close();
+//                	//System.out.println(result);
+//                    return result;
+//                }
+//                return null;
+//            } catch (ClientProtocolException e) {
+//	        	e.printStackTrace();
+//	        } catch (IOException e) {
+//	        	e.printStackTrace();
+//	        } catch (NameNotFoundException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			return null;
+//        }
 
-                List<NameValuePair> nameValuePairs = new ArrayList<>(2);
-            	
-                //Send device information along with the View
-				nameValuePairs.add(new BasicNameValuePair("appVersion", versionNumber + ""));
-				nameValuePairs.add(new BasicNameValuePair("appOS", "Android"));
-				
-				
-				nameValuePairs.add(new BasicNameValuePair("nonce", myView.getNonce()));
-				
-				nameValuePairs.add(new BasicNameValuePair("comments", myView.getComments()));
-				nameValuePairs.add(new BasicNameValuePair("age", myView.getAge()));
-				nameValuePairs.add(new BasicNameValuePair("knowarea", myView.getKnow()));
-				nameValuePairs.add(new BasicNameValuePair("rating", "" + myView.getRating()));
-				nameValuePairs.add(new BasicNameValuePair("photo", "" + myView.getPhotoData()));
-				nameValuePairs.add(new BasicNameValuePair("heading", "" + myView.getHeading()));
-			//	nameValuePairs.add(new BasicNameValuePair("lat", "" + myView.getLat()));
-			//	nameValuePairs.add(new BasicNameValuePair("lng", "" + myView.getLng()));
-                nameValuePairs.add(new BasicNameValuePair("words[]", myView.getWords()[0]));
-                nameValuePairs.add(new BasicNameValuePair("words[]", myView.getWords()[1]));
-                nameValuePairs.add(new BasicNameValuePair("words[]", myView.getWords()[2]));
-                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                HttpResponse resp = httpclient.execute(httppost);
-                HttpEntity entity = resp.getEntity();
-                //Read input to String
-                StatusLine status = resp.getStatusLine();
-          
-                if(status.getStatusCode() != 200){
-                	return null;
-                }
-                 
-                if (entity != null) {
-                	// A Simple Response Read
-                    InputStream instream = entity.getContent();
-                    String result = convertStreamToString(instream);
-                    // Closing the input stream will trigger connection release
-                    instream.close();
-                	//System.out.println(result);
-                    return result;
-                }
-                return null;
-            } catch (ClientProtocolException e) {
-	        	e.printStackTrace();
-	        } catch (IOException e) {
-	        	e.printStackTrace();
-	        } catch (NameNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-            //setProgressPercent(progress[0]);
-        }
-
-        protected void onPostExecute(String result) {
-        	System.out.println("Submitted View");
-        	postCallback(result);
-        }
-    }
+//        protected void onProgressUpdate(Integer... progress) {
+//            //setProgressPercent(progress[0]);
+//        }
+//
+//        protected void onPostExecute(String result) {
+//        	System.out.println("Submitted View");
+//        	postCallback(result);
+//        }
+//    }
 }

@@ -70,15 +70,14 @@ import org.json.JSONObject;
 
 public class MyViewActivity extends AppCompatActivity {
 
-	private long heading;
 	private RmVOverlayItem rmvOverlayItem;
 	
 	private Uri mImageUri;
 	private ProgressDialog progressDialog;
 	private AlertDialog alertDialog;
     private LatLng position;
-    LocationManager locationManager;
-
+    private long heading;
+    private LocationManager locationManager;
 
 
     @Override
@@ -105,16 +104,13 @@ public class MyViewActivity extends AppCompatActivity {
 		//System.out.println("Saving instance state");
 	  
 		//Compass
-		//if(savedInstanceState != null){
-			savedInstanceState.putLong("heading", heading);
-		//}
-		
-		//Coords
-//		if(locationObj != null){
-//			savedInstanceState.putLong("lat", (long) (locationObj.getLatitudeE6() * 1e6));
-//			savedInstanceState.putLong("lng", (long) (locationObj.getLongitudeE6() * 1e6));
-//		}
-		
+		savedInstanceState.putLong("heading", heading);
+
+        if(position != null) {
+            savedInstanceState.putDouble("lat", position.latitude);
+            savedInstanceState.getDouble("lng", position.longitude);
+        }
+
 		//image file
 		if(mImageUri != null){
 			savedInstanceState.putString("image", mImageUri.toString());
@@ -124,23 +120,23 @@ public class MyViewActivity extends AppCompatActivity {
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		//System.out.println("restoring instance state");
-		
+
         if(savedInstanceState.containsKey("heading")){//Check if null
             heading = savedInstanceState.getLong("heading");
         }
 
         if(savedInstanceState.getString("image") != null){//Check if null
             mImageUri = Uri.parse(savedInstanceState.getString("image"));
-            //Re-create image
-            displayImage();
+            displayImage();//Re-create image
         }
 
         if(savedInstanceState.containsKey("lat")){//Check if null
-//            locationObj = new GeoPoint(
-//                savedInstanceState.getDouble("lat"),
-//                savedInstanceState.getDouble("lng")
-//            );
+            position = new LatLng(
+                savedInstanceState.getDouble("lat"),
+                savedInstanceState.getDouble("lng")
+            );
+        } else {
+            determineLocationGps();
         }
 	}
 
@@ -166,6 +162,7 @@ public class MyViewActivity extends AppCompatActivity {
 
 	@Override
 	public void onPause() {
+        locationManager.removeUpdates(locationListener);
 		super.onPause();
 	}
 	
@@ -179,37 +176,6 @@ public class MyViewActivity extends AppCompatActivity {
     	super.onStop();
     }
 	
-//	private void checkForUnsaved(){
-//		//Check if there are any unsaved views
-//		final List<ViewORM> unSaved = ViewORM.getUnsaved();
-//		//System.out.println("DB id: " + unSaved.get(0).photoLocation);
-//		//unSaved.get(0).delete();
-//		if(unSaved.size() > 0){//Unsaved views to upload
-//			//Show button
-//			//Button uploadSaved = (Button) findViewById(R.id.saveUpload);
-//			//uploadSaved.setVisibility(View.VISIBLE);//Turn on upload button
-//			//uploadSaved.setText(uploadSaved.getText().toString().replace("*num*", "" + unSaved.size()));//Show number in button
-//
-//			CompoundButton.OnClickListener uploadSavedEvent = new CompoundButton.OnClickListener() {
-//				@Override
-//				public void onClick(View view) {
-//					//Upload views
-//			        //System.out.println(unSaved.get(0));
-//			        //System.out.println("Lat: " + unSaved.get(0).lat);
-//			        //System.out.println("Lng: " + unSaved.get(0).lng);
-//			        rmvOverlayItem = new RmVOverlayItem(unSaved.get(0));
-//			        rmvOverlayItem.dbId = unSaved.get(0).photoLocation;
-//			        showUploadDialog();
-//			        new PostViewTask().execute(rmvOverlayItem);
-//			    }
-//			};
-//			//uploadSaved.setOnClickListener(uploadSavedEvent);
-//		} else {
-//			//Button uploadSaved = (Button) findViewById(R.id.saveUpload);
-//			//uploadSaved.setVisibility(View.GONE);//Turn off upload button
-//		}
-//	}
-	
 	public Bitmap getResizedBitmap(Bitmap bm, float newHeight, float newWidth) {
 	    int width = bm.getWidth();
 	    int height = bm.getHeight();
@@ -220,13 +186,12 @@ public class MyViewActivity extends AppCompatActivity {
 	    	newWidth = width * (newHeight / height);
 	    }
 	    
-	    //System.out.println(newWidth + " " + newHeight);
-	    
+
 	    float scaleWidth = ( newWidth) / width;
 	    float scaleHeight = ( newHeight) / height;
 	    // CREATE A MATRIX FOR THE MANIPULATION
 	    Matrix matrix = new Matrix();
-	    // RESIZE THE BIT MAP
+	    // RESIZE THE BITMAP
 	    matrix.postScale(scaleWidth, scaleHeight);
 
 	    // "RECREATE" THE NEW BITMAP
@@ -264,10 +229,7 @@ public class MyViewActivity extends AppCompatActivity {
 	protected void onActivityResult (int requestCode, int resultCode, Intent data){
 		if(requestCode==11 && resultCode==RESULT_OK){
 			this.resizeImage();
-            determineLocationExif();
-			//Grab location and heading
-			//heading = (long) mMyLocationOverlay.getOrientation();
-			//locationObj =  mMyLocationOverlay.getMyLocation();
+            determineLocationExif();//Grab location and heading
 		} else {
 			finish();//Return to previous activity
 		}
@@ -385,7 +347,7 @@ public class MyViewActivity extends AppCompatActivity {
 //        request.addArrayParameter("array-parameter-name", valuesList);
 
         //configure the notification
-        request.setNotificationConfig(android.R.drawable.ic_menu_upload,
+        request.setNotificationConfig(R.drawable.uploading_icon,
                 "Rate my View",
                 "uploading view...",
                 "upload completed successfully text",
@@ -399,7 +361,7 @@ public class MyViewActivity extends AppCompatActivity {
         // set the intent to perform when the user taps on the upload notification.
         // currently tested only with intents that launches an activity
         // if you comment this line, no action will be performed when the user taps on the notification
-        request.setNotificationClickIntent(new Intent(getApplicationContext(), BaseActivity.class));
+        request.setNotificationClickIntent(new Intent(getApplicationContext(), BaseActivity.class).putExtra("upload", "intent"));
 
         try {
             //Start upload service and display the notification
@@ -435,7 +397,7 @@ public class MyViewActivity extends AppCompatActivity {
             lastKnownLocation.getTime() < new Date().getTime() + (1000 *45)//Less than 45 seconds old
             && lastKnownLocation.getAccuracy() < 50//Accuracy
         ){
-            Log.d("Accurary", "" + lastKnownLocation.getAccuracy());
+            //Log.d("Accurary", "" + lastKnownLocation.getAccuracy());
             position = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
         } else {
             // Register the listener with the Location Manager to receive location updates
@@ -447,8 +409,8 @@ public class MyViewActivity extends AppCompatActivity {
         public void onLocationChanged(Location location) {
             // Called when a new location is found by the network location provider.
             if(location.getAccuracy() < 50){
-                Log.d("Location", "Location set by GPS Listener");
-                Log.d("Accurary", "" + location.getAccuracy());
+                //Log.d("Location", "Location set by GPS Listener");
+                //Log.d("Accurary", "" + location.getAccuracy());
                 position = new LatLng(location.getLatitude(), location.getLongitude());
             }
         }

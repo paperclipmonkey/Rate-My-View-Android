@@ -1,5 +1,6 @@
 package uk.co.threeequals.ratemyview;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -40,6 +41,11 @@ public class BaseActivity extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         selectItem(0);
+
+        Intent intent = getIntent();
+        if(intent != null && intent.getStringExtra("upload")!= null){
+            openMenu();
+        }
     }
 
     private void selectItem(int position) {

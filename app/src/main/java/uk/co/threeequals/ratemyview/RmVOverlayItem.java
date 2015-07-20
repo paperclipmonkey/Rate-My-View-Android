@@ -10,8 +10,9 @@ import android.os.Parcelable;
 import android.util.Base64;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.clustering.ClusterItem;
 
-public class RmVOverlayItem implements Parcelable{
+public class RmVOverlayItem implements ClusterItem, Parcelable{
 	private String id;
 	private String photo;
 	private String age;
@@ -27,8 +28,9 @@ public class RmVOverlayItem implements Parcelable{
 	public String dbId;
 	private String nonce;
 	private String tsVague;
-	private String photoData;
-		
+    private String photoData;
+    private LatLng position;
+
 	public RmVOverlayItem(String aTitle, String aDescription,
 						  LatLng aGeoPoint) {
 		//super(aTitle, aDescription, aGeoPoint);
@@ -140,13 +142,6 @@ public class RmVOverlayItem implements Parcelable{
 		return rating;
 	}
 	
-	public void setTsVague(String aTsVague){
-		tsVague = aTsVague;
-	}
-	public String getTsVague(){
-		return tsVague;
-	}
-	
 	public void setWords(String[] aWords){
 		words = aWords;
 	}
@@ -182,7 +177,17 @@ public class RmVOverlayItem implements Parcelable{
 	public String getTime(){
 		return time;
 	}
-	
+
+    @Override
+    public LatLng getPosition(){
+        return position;
+    }
+
+    public void setPosition(LatLng aPosition){
+        position = aPosition;
+    }
+
+
 //	public Float getLat(){
 //		return (float) (this.getPoint().getLatitudeE6() / 1E6);
 //	}

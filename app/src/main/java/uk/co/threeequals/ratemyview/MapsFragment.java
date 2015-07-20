@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
+import com.google.maps.android.clustering.ClusterManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +35,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     GoogleMap mMap;
     BitmapDescriptor panoramicIcon;
     HashMap<Marker, RmVOverlayItem> markerData;
-
+    ClusterManager<RmVOverlayItem> mClusterManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,31 +75,43 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         LatLng uk = new LatLng(50.24344,-3.866643);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(uk, 5));
 
+        setUpClusterer();
+        getViews();//Get views when page opens
+    }
+
+    private void setUpClusterer() {
+        // Initialize the manager with the context and the map.
+        // (Activity extends context, so we can pass 'this' in the constructor.)
+        mClusterManager = new ClusterManager<RmVOverlayItem>(getActivity(), mMap);
+
+        // Point the map's listeners at the listeners implemented by the cluster
+        // manager.
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                                            @Override
                                            public void onCameraChange(CameraPosition cameraPosition) {
-                                               // Make a web call for the locations
-                                               //myTask = new MyTask();
-                                               //myTask.execute();
-
                                                getViews();
+
+                                               //Call the marker clusterer
+                                               mClusterManager.onCameraChange(cameraPosition);
                                            }
                                        }
         );
 
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                                          @Override
-                                          public boolean onMarkerClick(Marker marker) {
-                                              Intent intent = new Intent(getActivity(), TheirViewActivity.class);
-                                              intent.putExtra("object", markerData.get(marker));
-                                              startActivity(intent);
-                                              return false;
-                                          }
-                                      }
-        );
+        mMap.setOnMarkerClickListener(mClusterManager);
 
-        getViews();//Get views when page opens
+        //Setup click events
+        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<RmVOverlayItem>() {
+            @Override
+            public boolean onClusterItemClick(RmVOverlayItem rmVOverlayItem) {
+                Intent intent = new Intent(getActivity(), TheirViewActivity.class);
+                intent.putExtra("object", rmVOverlayItem);
+                startActivity(intent);
+                return false;
+            }
+        });
+
     }
+
 
     private void getViews(){
         //When changing camera need way of stopping first request
@@ -189,10 +202,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     JSONArray locJSON = k.getJSONArray("loc");
 
                     LatLng loc = new LatLng(locJSON.getDouble(1),locJSON.getDouble(0));
-                    Marker m = mMap.addMarker(new MarkerOptions()
-                            .position(loc)
-                            .icon(panoramicIcon)
-                    );
+
+//                    Marker m = mMap.addMarker(new MarkerOptions()
+//                            .position(loc)
+//                            .icon(panoramicIcon)
+//                    );
 
                     RmVOverlayItem overlayItem = new RmVOverlayItem(k.getString("id"), "RmV", loc);
                     overlayItem.setId(k.getString("id"));
@@ -209,7 +223,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                     overlayItem.setWords(keyAttributes);
                     overlayItem.setPhoto(k.getString("photo"));
-                    markerData.put(m, overlayItem);
+
+                    overlayItem.setPosition(loc);
+
+                    mClusterManager.addItem(overlayItem);
+
+                    //markerData.put(m, overlayItem);
 
                 }
             } catch (JSONException e) {

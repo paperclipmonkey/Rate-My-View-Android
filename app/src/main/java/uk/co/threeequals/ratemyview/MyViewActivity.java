@@ -26,7 +26,6 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.alexbbb.uploadservice.UploadRequest;
 import com.alexbbb.uploadservice.UploadService;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -242,57 +241,6 @@ public class MyViewActivity extends AppCompatActivity {
 	    }
 	}
 
-    public void upload(RmVOverlayItem rmvOverlayItem) {
-        final UploadRequest request = new UploadRequest(getApplicationContext(),
-                "custom-upload-id",
-                getString(R.string.base_url) + getString(R.string.upload_path));
-
-    /*
-     * parameter-name: is the name of the parameter that will contain file's data.
-     * Pass "uploaded_file" if you're using the test PHP script
-     *
-     * custom-file-name.extension: is the file name seen by the server.
-     * E.g. value of $_FILES["uploaded_file"]["name"] of the test PHP script
-     */
-
-        request.addFileToUpload(mImageUri.getPath(),
-                "photo",
-                mImageUri.getLastPathSegment(),
-                "image/jpeg");
-
-        //and parameters
-        request.addParameter("comments", rmvOverlayItem.getComments());
-        request.addArrayParameter("words", rmvOverlayItem.getWords());
-        request.addParameter("age", rmvOverlayItem.getAge());
-        request.addParameter("know", rmvOverlayItem.getKnow());
-        request.addParameter("rating", "" + rmvOverlayItem.getRating());
-        request.addParameter("heading", "" + rmvOverlayItem.getHeading());
-
-        //configure the notification
-        request.setNotificationConfig(R.drawable.uploading_icon,
-                getString(R.string.app_name),
-                getString(R.string.uploading_toast),
-                getString(R.string.uploading_success),
-                getString(R.string.upload_failed),
-                false);
-
-        // set the intent to perform when the user taps on the upload notification.
-        // currently tested only with intents that launches an activity
-        // if you comment this line, no action will be performed when the user taps on the notification
-        request.setNotificationClickIntent(new Intent(getApplicationContext(), BaseActivity.class).putExtra("upload", "intent"));
-
-        try {
-            //Start upload service and display the notification
-            UploadService.startUpload(request);
-
-        } catch (Exception exc) {
-            //You will end up here only if you pass an incomplete UploadRequest
-            Log.e("AndroidUploadService", exc.getLocalizedMessage(), exc);
-        }
-        Toast.makeText(getApplicationContext(), getString(R.string.uploading_toast), Toast.LENGTH_LONG).show();
-        finish();
-    }
-
     private void determineLocationExif(){
         ExifInterface exif = null;
         try {
@@ -313,7 +261,7 @@ public class MyViewActivity extends AppCompatActivity {
         //Check for stale location data first
         String locationProvider = LocationManager.GPS_PROVIDER;
         Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
-        if(
+        if(lastKnownLocation != null &&
             lastKnownLocation.getTime() < new Date().getTime() + (1000 *45)//Less than 45 seconds old
             && lastKnownLocation.getAccuracy() < 50//Accuracy
         ){
@@ -406,6 +354,8 @@ public class MyViewActivity extends AppCompatActivity {
         String nonce = java.util.UUID.randomUUID().toString();
         rmvOverlayItem.setNonce(nonce);
 
-        upload(rmvOverlayItem);
+        rmvOverlayItem.save();//Save the upload incase it doesn't upload correctly
+        UploadManager.upload(getApplicationContext(), rmvOverlayItem);
+        finish();
     }
 }

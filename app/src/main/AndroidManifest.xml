@@ -61,6 +61,15 @@
                 android:value=".BaseActivity" />
         </activity>
 
+
+        <receiver
+            android:name="UploadManager">
+            <intent-filter>
+                <action android:name="uk.co.threeequals.ratemyview"/>
+                <action android:name="uk.co.threeequals.ratemyview.uploadservice.broadcast.status"/>
+            </intent-filter>
+        </receiver>
+
         <service
             android:name="com.alexbbb.uploadservice.UploadService"
             android:enabled="true"

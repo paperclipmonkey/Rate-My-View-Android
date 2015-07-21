@@ -85,7 +85,8 @@ To do this we need to burrow beneath “that’s a nice view” and delve a litt
     <string name="sponsors">Sponsors</string>
     <string name="drawer_open">drawer open</string>
     <string name="drawer_close">drawer close</string>
-    <string name="overlayTileUrl">http://tiles.ratemyview.co.uk/v2/aonbs/{z}/{x}/{y}.png</string>
+    <!--<string name="overlayTileUrl">http://tiles.ratemyview.co.uk/v2/aonbs/{z}/{x}/{y}.png</string>-->
+    <string name="overlayTileUrl">http://tiles.ratemyview.co.uk.s3-website-eu-west-1.amazonaws.com/aonbs/{z}/{x}/{y}.png</string>
     <string name="upload_namespace">uk.co.threeequals.ratemyview</string>
     <string name="upload_path">view/</string>
     <string name="uploading_toast">Uploading...</string>

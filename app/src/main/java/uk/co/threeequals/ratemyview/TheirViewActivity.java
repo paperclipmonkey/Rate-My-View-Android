@@ -1,24 +1,23 @@
 package uk.co.threeequals.ratemyview;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-
-
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 public class TheirViewActivity extends AppCompatActivity {
 
@@ -49,7 +48,7 @@ public class TheirViewActivity extends AppCompatActivity {
 		
 		TextView words = (TextView) findViewById(R.id.theirWords);
 		words.setText("");//Blank
-		String[] wordList = item.getWords();
+		String[] wordList = item.getWordsArray();
 		for( int i = 0; i < wordList.length; i++) {
 			words.setText(words.getText() + "\n" + wordList[i]);
 		}

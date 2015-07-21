@@ -338,9 +338,14 @@ public class MyViewActivity extends AppCompatActivity {
             return;
 		}
 
-        RmVOverlayItem rmvOverlayItem = new RmVOverlayItem("", "", new LatLng(position.latitude, position.longitude));
+        RmVOverlayItem rmvOverlayItem = new RmVOverlayItem();
+        rmvOverlayItem.setPosition(position);
         rmvOverlayItem.setComments(comments);
-        rmvOverlayItem.setWords(new String[]{wordOne, wordTwo, wordThree});
+
+        rmvOverlayItem.setWords1(wordOne);
+        rmvOverlayItem.setWords2(wordTwo);
+        rmvOverlayItem.setWords3(wordThree);
+
         rmvOverlayItem.setAge(age);
         rmvOverlayItem.setKnow(know);
         rmvOverlayItem.setRating(rating);

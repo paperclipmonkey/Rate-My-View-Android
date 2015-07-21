@@ -15,20 +15,16 @@ public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelab
 	private long heading;
 	private String ts;
 	private Integer rating;
-	private String[] words;
+    private String words1;
+    private String words2;
+    private String words3;
 	private String know;
 	private String photoLocation;
 	private String time;
-	public Boolean fromDB;
 	private String nonce;
 	private String tsVague;
-    private LatLng position;
-
-	public RmVOverlayItem(String aTitle, String aDescription,
-						  LatLng aGeoPoint) {
-		//super(aTitle, aDescription, aGeoPoint);
-		fromDB = false;
-	}
+    private Double lng;
+    private Double lat;
 
     public RmVOverlayItem(){
 
@@ -91,14 +87,45 @@ public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelab
 		return rating;
 	}
 	
-	public void setWords(String[] aWords){
-		words = aWords;
+	public void setWords1(String aWords){
+		words1 = aWords;
 	}
-	public String[] getWords(){
-		return words;
+	public String getWords1(){
+		return words1;
 	}
-	
-	public void setKnow(String aKnow){
+
+    public void setWords2(String aWords){
+        words2 = aWords;
+    }
+    public String getWords2(){
+        return words2;
+    }
+
+    public void setWords3(String aWords){
+        words3 = aWords;
+    }
+    public String getWords3(){
+        return words3;
+    }
+
+    public void setWordsArray(String[] aWords){
+        if(aWords.length > 0) {
+            words1 = aWords[0];
+        }
+        if(aWords.length > 1) {
+            words2 = aWords[1];
+        }
+        if(aWords.length > 2) {
+            words3 = aWords[2];
+        }
+    }
+
+    public String[] getWordsArray(){
+        return new String[]{words1, words2, words3};
+    }
+
+
+    public void setKnow(String aKnow){
 		know = aKnow;
 	}
 	public String getKnow(){
@@ -122,24 +149,28 @@ public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelab
 
     @Override
     public LatLng getPosition(){
-        return position;
+        return new LatLng(lat, lng);
     }
 
     public void setPosition(LatLng aPosition){
-        position = aPosition;
+        lat = aPosition.latitude;
+        lng = aPosition.longitude;
     }
 
+	public Double getLat(){
+        return lat;
+	}
 
-//	public Float getLat(){
-//		return (float) (this.getPoint().getLatitudeE6() / 1E6);
-//	}
-//
-//	public Float getLng(){
-//		return (float) (this.getPoint().getLongitudeE6() / 1E6);
-//	}
-//
+	public Double getLng(){
+        return lng;
+	}
 
-	@Override
+    public void setLat(Double aLat) { lat = aLat; }
+    public void setLng(Double aLng){
+        lng = aLng;
+    }
+
+    @Override
 	public int describeContents() {
 		return 0;
 	}
@@ -150,17 +181,21 @@ public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelab
 		out.writeString(photo);
 		out.writeString(age);
 		out.writeString(comments);
-		out.writeInt((int)heading);
+		out.writeInt((int) heading);
 		out.writeString(ts);
 		out.writeInt(rating);
 		out.writeString(tsVague);
-		out.writeStringArray(words);
+        out.writeString(words1);
+        out.writeString(words2);
+        out.writeString(words3);
 		out.writeString(know);
 		out.writeString(photoLocation);
 		out.writeString(time);
-		out.writeString(nonce);
+        out.writeString(nonce);
+        out.writeDouble(lat);
+        out.writeDouble(lng);
 	}
-	
+
 	public static final Parcelable.Creator<RmVOverlayItem> CREATOR = new Parcelable.Creator<RmVOverlayItem>() {
 		public RmVOverlayItem createFromParcel(Parcel in) {
 		    return new RmVOverlayItem(in);
@@ -180,10 +215,14 @@ public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelab
 		ts = in.readString();
 		rating = in.readInt();
 		tsVague = in.readString();
-		words = in.createStringArray();
-		know = in.readString();
+        words1 = in.readString();
+        words2 = in.readString();
+        words3 = in.readString();
+        know = in.readString();
 		photoLocation = in.readString();
 		time = in.readString();
-		nonce = in.readString();
+        nonce = in.readString();
+        lat = in.readDouble();
+        lng = in.readDouble();
 	}
 }

@@ -197,7 +197,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
 //                  .icon(panoramicIcon)
 
-                    RmVOverlayItem overlayItem = new RmVOverlayItem(k.getString("id"), "RmV", loc);
+                    RmVOverlayItem overlayItem = new RmVOverlayItem();
+                    overlayItem.setPosition(loc);
                     overlayItem.setStringId(k.getString("id"));
                     overlayItem.setRating(k.getInt("rating"));
                     overlayItem.setTs(k.getString("ts"));
@@ -210,7 +211,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         keyAttributes[i1] = words.getString(i1);
                     }
 
-                    overlayItem.setWords(keyAttributes);
+                    overlayItem.setWordsArray(keyAttributes);
                     overlayItem.setPhoto(k.getString("photo"));
 
                     overlayItem.setPosition(loc);

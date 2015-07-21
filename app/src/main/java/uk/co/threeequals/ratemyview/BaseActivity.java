@@ -139,7 +139,7 @@ public class BaseActivity extends AppCompatActivity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_menu:
-                openMenu();
+                toggleMenu();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -158,9 +158,19 @@ public class BaseActivity extends AppCompatActivity {
         uploadReceiver.unregister(this);
     }
 
+
     private void openMenu(){
         DrawerLayout drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer_layout.openDrawer(GravityCompat.START);
+    }
+
+    private void toggleMenu(){
+        DrawerLayout drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if(drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START);
+        } else {
+            drawer_layout.openDrawer(GravityCompat.START);
+        }
     }
 }
 

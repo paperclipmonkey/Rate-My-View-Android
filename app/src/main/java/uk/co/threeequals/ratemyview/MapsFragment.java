@@ -167,10 +167,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
 
         JSONClient client = new JSONClient(getActivity(), l);
-        String url = getString(R.string.base_url) + "views/?withinarea=" + jBounds.toString();
+        String url = getString(R.string.base_url) + getString(R.string.views_query_path) + jBounds.toString();
         client.execute(url);
 
-        System.out.println(jBounds.toString());
+        //System.out.println(jBounds.toString());
     }
 
     GetJSONListener l = new GetJSONListener(){

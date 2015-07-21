@@ -22,7 +22,6 @@ public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelab
 	public Boolean fromDB;
 	private String nonce;
 	private String tsVague;
-    private String photoData;
     private LatLng position;
 
 	public RmVOverlayItem(String aTitle, String aDescription,
@@ -34,53 +33,6 @@ public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelab
     public RmVOverlayItem(){
 
     }
-	
-//	public RmVOverlayItem(Object savedObj) {
-//		//super("", "", new GeoPoint(Double.parseDouble(savedObj.lat), Double.parseDouble(savedObj.lng)));
-//		//savedObj.
-//		//Fill out the object using values from the Passed in Object
-//		age = savedObj.age;
-//		comments = savedObj.comments;
-//		heading = savedObj.heading;
-//		ts = savedObj.ts;
-//		rating = savedObj.rating;
-//		words = new String[]{savedObj.word1, savedObj.word2, savedObj.word3};
-//		know = savedObj.know;
-//		time = savedObj.time;
-//		nonce = savedObj.nonce;
-//		fromDB = true;
-//
-//		photoLocation = savedObj.photoLocation;
-//		File imgFile = new File(photoLocation);
-//		//System.out.println("Photo location: " + photoLocation);
-//		if(imgFile.exists()){
-//			//System.out.println("Image exists");
-//			try {
-//				FileInputStream fin = new FileInputStream(imgFile.getAbsolutePath());
-//				byte fileContent[] = new byte[(int)imgFile.length()];
-//				// Reads up to certain bytes of data from this input stream into an array of bytes.
-//				fin.read(fileContent);
-//				//System.out.println("Read file");
-//
-//				fin.close();
-//				photoData = Base64.encodeToString(fileContent, Base64.DEFAULT);
-//			} catch (FileNotFoundException e) {
-//				System.out.println("Cannot find image");
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				System.out.println("IO exception");
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//
-//
-//			//img.setImageBitmap(myBitmap);
-//		} else {
-//			System.out.println("Cannot find image");
-//			//TODO - Add throw?
-//		}
-//	}
 	
 	public void setStringId(String aId){
 		id = aId;
@@ -152,14 +104,7 @@ public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelab
 	public String getKnow(){
 		return know;
 	}
-	
-	public void setPhotoData(String aPhotoData){
-		photoData = aPhotoData;
-	}
-	public String getPhotoData(){
-		return photoData;
-	}
-	
+
 	public void setPhotoLocation(String aPhotoLocation){
 		photoLocation = aPhotoLocation;
 	}
@@ -227,7 +172,6 @@ public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelab
 	};
 
 	private RmVOverlayItem(Parcel in) {
-		//super("", "", new GeoPoint(0, 0));
 		id = in.readString();
 		photo = in.readString();
 		age = in.readString();

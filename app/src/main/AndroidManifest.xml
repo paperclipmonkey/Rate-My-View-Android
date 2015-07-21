@@ -22,8 +22,15 @@
         android:allowBackup="true"
         android:hardwareAccelerated="false"
         android:icon="@drawable/ic_launcher"
+        android:name="com.orm.SugarApp"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.Light" >
+
+        <!-- Sugar ORM -->
+        <meta-data android:name="DATABASE" android:value="ratemyview.db" />
+        <meta-data android:name="VERSION" android:value="1" />
+        <meta-data android:name="QUERY_LOG" android:value="true" />
+        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="uk.co.threeequals.ratemyview" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

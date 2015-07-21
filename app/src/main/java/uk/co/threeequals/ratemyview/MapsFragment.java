@@ -193,7 +193,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 //                  .icon(panoramicIcon)
 
                     RmVOverlayItem overlayItem = new RmVOverlayItem(k.getString("id"), "RmV", loc);
-                    overlayItem.setId(k.getString("id"));
+                    overlayItem.setStringId(k.getString("id"));
                     overlayItem.setRating(k.getInt("rating"));
                     overlayItem.setTs(k.getString("ts"));
                     overlayItem.setComments(k.getString("comments"));
@@ -212,7 +212,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                     mClusterManager.addItem(overlayItem);
 
-                    markerData.put(overlayItem.getId(), overlayItem);
+                    markerData.put(overlayItem.getStringId(), overlayItem);
                 }
             } catch (JSONException e) {
 

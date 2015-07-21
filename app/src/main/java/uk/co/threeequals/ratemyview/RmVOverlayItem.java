@@ -5,8 +5,9 @@ import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
+import com.orm.SugarRecord;
 
-public class RmVOverlayItem implements ClusterItem, Parcelable{
+public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelable{
 	private String id;
 	private String photo;
 	private String age;
@@ -29,6 +30,10 @@ public class RmVOverlayItem implements ClusterItem, Parcelable{
 		//super(aTitle, aDescription, aGeoPoint);
 		fromDB = false;
 	}
+
+    public RmVOverlayItem(){
+
+    }
 	
 //	public RmVOverlayItem(Object savedObj) {
 //		//super("", "", new GeoPoint(Double.parseDouble(savedObj.lat), Double.parseDouble(savedObj.lng)));
@@ -77,10 +82,10 @@ public class RmVOverlayItem implements ClusterItem, Parcelable{
 //		}
 //	}
 	
-	public void setId(String aId){
+	public void setStringId(String aId){
 		id = aId;
 	}
-	public String getId(){
+	public String getStringId(){
 		return id;
 	}
 	

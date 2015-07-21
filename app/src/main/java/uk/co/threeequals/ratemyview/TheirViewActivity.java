@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,13 +39,15 @@ public class TheirViewActivity extends AppCompatActivity {
 		rating.setText(item.getRating() + "/5");
 	
 		TextView comments = (TextView) findViewById(R.id.theirComments);
-		comments.setText(item.getComments());
+
+		String commentHtml = Html.fromHtml(item.getComments()).toString();
+		comments.setText(commentHtml);
 		
 		TextView ts = (TextView) findViewById(R.id.theirTs);
 		ts.setText("Uploaded: " + item.getTs());
 		
 		TextView heading = (TextView) findViewById(R.id.theirHeading);
-		heading.setText("Heading: " + item.getHeading() + "�");
+		heading.setText("Heading: " + item.getHeading() + getString(R.string.degree_symbol));
 		
 		TextView words = (TextView) findViewById(R.id.theirWords);
 		words.setText("");//Blank

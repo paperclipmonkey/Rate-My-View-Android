@@ -83,7 +83,7 @@
                 android:layout_marginTop="@dimen/android_padding_text_sides"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/sponsors"
+                android:text="@string/about_sponsors"
                 android:textColor="#000"
                 android:textSize="@dimen/title_size" />
 

@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.alexbbb.uploadservice.AbstractUploadServiceReceiver;
 import com.alexbbb.uploadservice.UploadService;
@@ -112,17 +114,25 @@ public class BaseActivity extends AppCompatActivity {
 
     private final AbstractUploadServiceReceiver uploadReceiver =
         new AbstractUploadServiceReceiver() {
+            ProgressBar progressBar = (ProgressBar) findViewById(R.id.navigation_drawer_progress);
+            TextView textView = (TextView) findViewById(R.id.navigation_drawer_text);
 
             @Override
             public void onProgress(String uploadId, int progress) {
                 Log.i(TAGLISTEN, "The progress of the upload with ID "
                         + uploadId + " is: " + progress);
+
+                textView.setText(R.string.uploading_toast);
+
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setProgress(progress);
             }
 
             @Override
             public void onError(String uploadId, Exception exception) {
                 Log.e(TAGLISTEN, "Error in upload with ID: " + uploadId + ". "
                         + exception.getLocalizedMessage(), exception);
+                textView.setText(R.string.upload_failed);
             }
 
             @Override
@@ -132,6 +142,8 @@ public class BaseActivity extends AppCompatActivity {
                 Log.i(TAGLISTEN, "Upload with ID " + uploadId
                         + " has been completed with HTTP " + serverResponseCode
                         + ". Response from server: " + serverResponseMessage);
+
+                textView.setText(R.string.uploading_success);
 
                 //If your server responds with a JSON, you can parse it
                 //from serverResponseMessage string using a library

@@ -23,5 +23,12 @@
             android:text="11 uploads waiting"
             android:textColor="#fff"
             android:id="@+id/navigation_drawer_text" />
+        <ProgressBar
+            android:id="@+id/navigation_drawer_progress"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:visibility="invisible"
+            android:layout_height="wrap_content" />
+        ... />
     </LinearLayout>
 </merge>

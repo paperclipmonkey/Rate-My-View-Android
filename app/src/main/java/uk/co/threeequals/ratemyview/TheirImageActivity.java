@@ -1,11 +1,10 @@
 package uk.co.threeequals.ratemyview;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.widget.ImageView;
-import uk.co.threeequals.ratemyview.R;
 
 public class TheirImageActivity extends Activity {
 	ImageView bmImage;

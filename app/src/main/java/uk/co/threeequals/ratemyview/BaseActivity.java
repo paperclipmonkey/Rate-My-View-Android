@@ -43,6 +43,8 @@ public class BaseActivity extends AppCompatActivity {
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
+        updateWaitingViews();
+
         selectItem(0);
 
         Intent intent = getIntent();
@@ -72,6 +74,7 @@ public class BaseActivity extends AppCompatActivity {
                                 + exception.getLocalizedMessage(), exception);
                         textView.setText(R.string.upload_failed);
                         progressBar.setVisibility(View.INVISIBLE);
+                        updateWaitingViews();
                     }
 
                     @Override
@@ -82,14 +85,20 @@ public class BaseActivity extends AppCompatActivity {
                                 + " has been completed with HTTP " + serverResponseCode
                                 + ". Response from server: " + serverResponseMessage);
 
-                        textView.setText(R.string.uploading_success);
+                        //textView.setText(R.string.uploading_success);
                         progressBar.setVisibility(View.INVISIBLE);
+                        updateWaitingViews();
 
                         //If your server responds with a JSON, you can parse it
                         //from serverResponseMessage string using a library
                         //such as org.json (embedded in Android) or google's gson
                     }
                 };
+    }
+
+    private void updateWaitingViews(){
+        TextView textView = (TextView) findViewById(R.id.navigation_drawer_text);
+        textView.setText(UploadManager.getQueueLength()+" views waiting to upload");
     }
 
     private void selectItem(int position) {

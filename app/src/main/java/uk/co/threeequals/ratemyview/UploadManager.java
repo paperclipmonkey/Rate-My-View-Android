@@ -9,6 +9,8 @@ import android.widget.Toast;
 import com.alexbbb.uploadservice.UploadRequest;
 import com.alexbbb.uploadservice.UploadService;
 
+import java.util.List;
+
 /**
  * Created by michaelwaterworth on 21/07/15.
  */
@@ -35,7 +37,11 @@ public class UploadManager extends BroadcastReceiver {
                 }
             }
         }
+    }
 
+    public static int getQueueLength(){
+        List<RmVOverlayItem> views = RmVOverlayItem.listAll(RmVOverlayItem.class);
+        return views.size();
     }
 
     public void onCompleted(String uploadId,
@@ -51,7 +57,9 @@ public class UploadManager extends BroadcastReceiver {
             //On success of upload grab Id and remove from Db
             //TODO - Check JSON response
             RmVOverlayItem uploaded = RmVOverlayItem.findById(RmVOverlayItem.class, Long.parseLong(uploadId));
-            uploaded.delete();
+            if(uploaded != null) {
+                uploaded.delete();
+            }
             //If your server responds with a JSON, you can parse it
             //from serverResponseMessage string using a library
             //such as org.json (embedded in Android) or google's gson
@@ -78,7 +86,7 @@ public class UploadManager extends BroadcastReceiver {
 
         //and parameters
         request.addParameter("comments", rmvOverlayItem.getComments());
-        request.addArrayParameter("words", rmvOverlayItem.getWords());
+        request.addArrayParameter("words", rmvOverlayItem.getWordsArray());
         request.addParameter("age", rmvOverlayItem.getAge());
         request.addParameter("know", rmvOverlayItem.getKnow());
         request.addParameter("rating", "" + rmvOverlayItem.getRating());

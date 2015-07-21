@@ -114,6 +114,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         //Then loading a new request
         VisibleRegion bounds = mMap.getProjection().getVisibleRegion();
         LatLngBounds latlngb = bounds.latLngBounds;
+
+        //Don't send 0,0 Lat/Lng to server
+        if(latlngb.southwest.longitude == 0 && latlngb.southwest.latitude == 0){
+            return;
+        }
         //Create points
         JSONArray jBounds = new JSONArray();
         try {
@@ -219,29 +224,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             }
             i++;
         }
-
-        //mMapView.getOverlays().remove(overlay);
-
-//        ItemizedOverlayWithFocus overlay;
-//
-//        overlay = new ItemizedOverlayWithFocus<>(getApplicationContext(), new ArrayList<RmVOverlayItem>(),
-//                new ItemizedIconOverlay.OnItemGestureListener<RmVOverlayItem>() {
-//
-//                    @Override
-//                    public boolean onItemSingleTapUp(final int index, final RmVOverlayItem item) {
-//                        //loadTheirView(item);
-//                        return true;
-//                    }
-//
-//                    @Override
-//                    public boolean onItemLongPress(final int index, final RmVOverlayItem item) {
-//                        return false;
-//                    }
-//                });
-//
-//        items.addAll(newList);
-//        overlay.addItems(items);
-//        overlay.setEnabled(true);
+        mClusterManager.cluster();
     }
 
 }

@@ -133,6 +133,7 @@ public class BaseActivity extends AppCompatActivity {
                 Log.e(TAGLISTEN, "Error in upload with ID: " + uploadId + ". "
                         + exception.getLocalizedMessage(), exception);
                 textView.setText(R.string.upload_failed);
+                progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -144,6 +145,7 @@ public class BaseActivity extends AppCompatActivity {
                         + ". Response from server: " + serverResponseMessage);
 
                 textView.setText(R.string.uploading_success);
+                progressBar.setVisibility(View.INVISIBLE);
 
                 //If your server responds with a JSON, you can parse it
                 //from serverResponseMessage string using a library

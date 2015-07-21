@@ -8,7 +8,8 @@ import com.google.maps.android.clustering.ClusterItem;
 import com.orm.SugarRecord;
 
 public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelable{
-	private String id;
+    private Long id;
+    private String stringId;
 	private String photo;
 	private String age;
 	private String comments;
@@ -27,14 +28,23 @@ public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelab
     private Double lat;
 
     public RmVOverlayItem(){
-
+        id = 0L;
     }
-	
+
+    public void setId(Long aId){
+        id = aId;
+    }
+    public Long getId(){
+        return id;
+    }
+
+
 	public void setStringId(String aId){
-		id = aId;
+        stringId = aId;
 	}
+
 	public String getStringId(){
-		return id;
+		return stringId;
 	}
 	
 	public void setNonce(String aNonce){
@@ -177,7 +187,8 @@ public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelab
 
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeString(id);
+        out.writeString(stringId);
+        out.writeLong(id);
 		out.writeString(photo);
 		out.writeString(age);
 		out.writeString(comments);
@@ -207,7 +218,8 @@ public class RmVOverlayItem extends SugarRecord implements ClusterItem, Parcelab
 	};
 
 	private RmVOverlayItem(Parcel in) {
-		id = in.readString();
+        stringId = in.readString();
+        id = in.readLong();
 		photo = in.readString();
 		age = in.readString();
 		comments = in.readString();

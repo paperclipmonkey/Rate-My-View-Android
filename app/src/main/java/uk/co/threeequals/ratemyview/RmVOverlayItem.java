@@ -1,13 +1,7 @@
 package uk.co.threeequals.ratemyview;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Base64;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
@@ -25,7 +19,6 @@ public class RmVOverlayItem implements ClusterItem, Parcelable{
 	private String photoLocation;
 	private String time;
 	public Boolean fromDB;
-	public String dbId;
 	private String nonce;
 	private String tsVague;
     private String photoData;
@@ -94,12 +87,11 @@ public class RmVOverlayItem implements ClusterItem, Parcelable{
 	public void setNonce(String aNonce){
 		nonce = aNonce;
 	}
-	
+
 	public String getNonce(){
 		return nonce;
 	}
-	
-	
+
 	public void setPhoto(String aPhoto){
 		photo = aPhoto;
 	}
@@ -199,13 +191,11 @@ public class RmVOverlayItem implements ClusterItem, Parcelable{
 
 	@Override
 	public int describeContents() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-		// TODO Auto-generated method stub
 		out.writeString(id);
 		out.writeString(photo);
 		out.writeString(age);

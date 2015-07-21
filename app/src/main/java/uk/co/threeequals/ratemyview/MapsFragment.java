@@ -17,8 +17,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.maps.android.clustering.ClusterManager;
@@ -27,14 +25,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
     GoogleMap mMap;
     BitmapDescriptor panoramicIcon;
-    HashMap<Marker, RmVOverlayItem> markerData;
+    HashMap<String, RmVOverlayItem> markerData;
     ClusterManager<RmVOverlayItem> mClusterManager;
 
     @Override
@@ -82,7 +78,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private void setUpClusterer() {
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
-        mClusterManager = new ClusterManager<RmVOverlayItem>(getActivity(), mMap);
+        mClusterManager = new ClusterManager<>(getActivity(), mMap);
 
         // Point the map's listeners at the listeners implemented by the cluster
         // manager.
@@ -126,13 +122,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                                     latlngb.southwest.longitude
                             )
                             .put(
-                                    latlngb.northeast.latitude
+                                    latlngb.southwest.latitude
                             )
             );
 
             jBounds.put(new JSONArray()
                             .put(
-                                    latlngb.northeast.longitude
+                                    latlngb.southwest.longitude
                                     //bounds.getLonEastE6() / 1E6
                             )
                             .put(
@@ -147,14 +143,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                                     //bounds.getLonEastE6() / 1E6
                             )
                             .put(
-                                    latlngb.southwest.latitude
+                                    latlngb.northeast.latitude
                                     //bounds.getLatSouthE6() / 1E6
                             )
             );
 
             jBounds.put(new JSONArray()
                             .put(
-                                    latlngb.southwest.longitude
+                                    latlngb.northeast.longitude
                                     //bounds.getLonWestE6() / 1E6
                             )
                             .put(
@@ -183,30 +179,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     };
 
     public void addJSON(JSONArray jsonFromNet){
-        List<RmVOverlayItem> items = new ArrayList<>();
         int i = 0;
         while( i < jsonFromNet.length() ){
             JSONObject k;
             try {
                 k = jsonFromNet.getJSONObject(i);
-                int ii = 0;
-                boolean newObj = true;
-                while(ii < items.size()){
-                    RmVOverlayItem item = items.get(ii);
-                    if(item.getPhoto().equals(k.getString("photo"))){
-                        newObj = false;
-                    }
-                    ii++;
-                }
-                if(newObj){//If new
+
+                if(markerData.get(k.getString("id")) == null){//If new
                     JSONArray locJSON = k.getJSONArray("loc");
 
                     LatLng loc = new LatLng(locJSON.getDouble(1),locJSON.getDouble(0));
 
-//                    Marker m = mMap.addMarker(new MarkerOptions()
-//                            .position(loc)
-//                            .icon(panoramicIcon)
-//                    );
+//                  .icon(panoramicIcon)
 
                     RmVOverlayItem overlayItem = new RmVOverlayItem(k.getString("id"), "RmV", loc);
                     overlayItem.setId(k.getString("id"));
@@ -228,10 +212,10 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                     mClusterManager.addItem(overlayItem);
 
-                    //markerData.put(m, overlayItem);
-
+                    markerData.put(overlayItem.getId(), overlayItem);
                 }
             } catch (JSONException e) {
+
             }
             i++;
         }

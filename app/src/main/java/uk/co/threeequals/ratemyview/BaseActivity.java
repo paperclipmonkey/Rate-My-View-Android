@@ -160,11 +160,13 @@ public class BaseActivity extends AppCompatActivity {
 
 
     private void openMenu(){
+        updateWaitingViews();
         DrawerLayout drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer_layout.openDrawer(GravityCompat.START);
     }
 
     private void toggleMenu(){
+        updateWaitingViews();
         DrawerLayout drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
         if(drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START);

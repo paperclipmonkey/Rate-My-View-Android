@@ -25,6 +25,7 @@ public class BaseActivity extends AppCompatActivity {
     ListView mDrawerList;
     DrawerLayout mDrawerLayout;
     String TAGLISTEN = "RmVUploadListener";
+    private AbstractUploadServiceReceiver uploadReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         UploadService.NAMESPACE = getString(R.string.upload_namespace);
@@ -48,6 +49,47 @@ public class BaseActivity extends AppCompatActivity {
         if(intent != null && intent.getStringExtra("upload")!= null){
             openMenu();
         }
+
+        uploadReceiver =
+                new AbstractUploadServiceReceiver() {
+                    ProgressBar progressBar = (ProgressBar) findViewById(R.id.navigation_drawer_progress);
+                    TextView textView = (TextView) findViewById(R.id.navigation_drawer_text);
+
+                    @Override
+                    public void onProgress(String uploadId, int progress) {
+                        Log.i(TAGLISTEN, "The progress of the upload with ID "
+                                + uploadId + " is: " + progress);
+
+                        textView.setText(R.string.uploading_toast);
+
+                        progressBar.setVisibility(View.VISIBLE);
+                        progressBar.setProgress(progress);
+                    }
+
+                    @Override
+                    public void onError(String uploadId, Exception exception) {
+                        Log.e(TAGLISTEN, "Error in upload with ID: " + uploadId + ". "
+                                + exception.getLocalizedMessage(), exception);
+                        textView.setText(R.string.upload_failed);
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onCompleted(String uploadId,
+                                            int serverResponseCode,
+                                            String serverResponseMessage) {
+                        Log.i(TAGLISTEN, "Upload with ID " + uploadId
+                                + " has been completed with HTTP " + serverResponseCode
+                                + ". Response from server: " + serverResponseMessage);
+
+                        textView.setText(R.string.uploading_success);
+                        progressBar.setVisibility(View.INVISIBLE);
+
+                        //If your server responds with a JSON, you can parse it
+                        //from serverResponseMessage string using a library
+                        //such as org.json (embedded in Android) or google's gson
+                    }
+                };
     }
 
     private void selectItem(int position) {
@@ -111,46 +153,5 @@ public class BaseActivity extends AppCompatActivity {
         DrawerLayout drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer_layout.openDrawer(GravityCompat.START);
     }
-
-    private final AbstractUploadServiceReceiver uploadReceiver =
-        new AbstractUploadServiceReceiver() {
-            ProgressBar progressBar = (ProgressBar) findViewById(R.id.navigation_drawer_progress);
-            TextView textView = (TextView) findViewById(R.id.navigation_drawer_text);
-
-            @Override
-            public void onProgress(String uploadId, int progress) {
-                Log.i(TAGLISTEN, "The progress of the upload with ID "
-                        + uploadId + " is: " + progress);
-
-                textView.setText(R.string.uploading_toast);
-
-                progressBar.setVisibility(View.VISIBLE);
-                progressBar.setProgress(progress);
-            }
-
-            @Override
-            public void onError(String uploadId, Exception exception) {
-                Log.e(TAGLISTEN, "Error in upload with ID: " + uploadId + ". "
-                        + exception.getLocalizedMessage(), exception);
-                textView.setText(R.string.upload_failed);
-                progressBar.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onCompleted(String uploadId,
-                                    int serverResponseCode,
-                                    String serverResponseMessage) {
-                Log.i(TAGLISTEN, "Upload with ID " + uploadId
-                        + " has been completed with HTTP " + serverResponseCode
-                        + ". Response from server: " + serverResponseMessage);
-
-                textView.setText(R.string.uploading_success);
-                progressBar.setVisibility(View.INVISIBLE);
-
-                //If your server responds with a JSON, you can parse it
-                //from serverResponseMessage string using a library
-                //such as org.json (embedded in Android) or google's gson
-            }
-        };
 }
 

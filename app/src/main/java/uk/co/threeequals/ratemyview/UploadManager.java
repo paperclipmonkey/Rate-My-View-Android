@@ -80,7 +80,7 @@ public class UploadManager extends BroadcastReceiver {
      */
 
         request.addFileToUpload(rmvOverlayItem.getPhotoLocation(),
-                "photo",
+                "image",
                 "uploaded.jpg",
                 "image/jpeg");
 
@@ -91,6 +91,10 @@ public class UploadManager extends BroadcastReceiver {
         request.addParameter("know", rmvOverlayItem.getKnow());
         request.addParameter("rating", "" + rmvOverlayItem.getRating());
         request.addParameter("heading", "" + rmvOverlayItem.getHeading());
+
+        //Location
+        request.addParameter("lat", "" + rmvOverlayItem.getLat());
+        request.addParameter("lng", "" + rmvOverlayItem.getLng());
 
         //configure the notification
         request.setNotificationConfig(R.drawable.uploading_icon,

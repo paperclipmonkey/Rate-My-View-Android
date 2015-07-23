@@ -193,7 +193,7 @@ public class MyViewActivity extends AppCompatActivity {
 	protected void onActivityResult (int requestCode, int resultCode, Intent data){
 		if(requestCode==11 && resultCode==RESULT_OK){
 			this.resizeImage();
-            determineLocationExif();//Grab location and heading
+            determineLocationGps();//Grab location and heading
 		} else {
 			finish();//Return to previous activity
 		}
@@ -220,18 +220,18 @@ public class MyViewActivity extends AppCompatActivity {
 	    try {
 	    	mImageBitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
 	    	Bitmap resizedBitmap = getResizedBitmap(mImageBitmap, 1000, 1000);
-						
+
 			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			resizedBitmap.compress(CompressFormat.JPEG, 100, baos);
-			
-			byte[] byteArray = baos.toByteArray();  
-			
+
+			byte[] byteArray = baos.toByteArray();
+
 			//Update the saved file to be smaller
 			FileOutputStream fos = new FileOutputStream(mImageUri.getPath());
 			fos.write(byteArray);
-			fos.close();	
+			fos.close();
 			displayImage();//Show the image
-			
+
 	    } catch (Exception e) {
 	        Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
 	        Log.d("Rmv", e.getLocalizedMessage(), e);
@@ -241,6 +241,7 @@ public class MyViewActivity extends AppCompatActivity {
 	    }
 	}
 
+    //TODO - fix location exif gathering
     private void determineLocationExif(){
         ExifInterface exif = null;
         try {

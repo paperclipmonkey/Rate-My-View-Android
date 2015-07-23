@@ -97,7 +97,7 @@ public class UploadManager extends BroadcastReceiver {
         request.addParameter("lng", "" + rmvOverlayItem.getLng());
 
         //configure the notification
-        request.setNotificationConfig(R.drawable.uploading_icon,
+        request.setNotificationConfig(R.drawable.app_icon,
                 context.getString(R.string.app_name),
                 context.getString(R.string.uploading_toast),
                 context.getString(R.string.uploading_success),

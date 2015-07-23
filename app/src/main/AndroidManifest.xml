@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="uk.co.threeequals.ratemyview"
     android:versionCode="10"
-    android:versionName="4" >
+    android:versionName="4">
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -21,7 +22,8 @@
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="false"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/app_icon"
+        tools:replace="android:icon"
         android:name="com.orm.SugarApp"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.Light" >

@@ -8,25 +8,11 @@
         android:layout_width="240dp"
         android:layout_gravity="start"
         app:menu="@menu/drawer"
+        app:headerLayout="@layout/sidebar_header"
         android:orientation="vertical" >
 
         <!--android:background="#111"-->
         <!--app:headerLayout="@layout/drawer_header"-->
 
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text=""
-            android:textColor="#fff"
-            android:id="@+id/navigation_drawer_text" />
-        <ProgressBar
-            android:id="@+id/navigation_drawer_progress"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:visibility="invisible"
-            android:layout_height="wrap_content" />
     </android.support.design.widget.NavigationView>
 </merge>

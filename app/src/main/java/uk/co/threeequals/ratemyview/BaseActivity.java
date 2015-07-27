@@ -13,7 +13,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alexbbb.uploadservice.AbstractUploadServiceReceiver;
@@ -49,6 +51,15 @@ public class BaseActivity extends AppCompatActivity {
         if(intent != null && intent.getStringExtra("upload")!= null){
             openMenu();
         }
+
+        Button reUploadButon = (Button) findViewById(R.id.reupload_button);
+        reUploadButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Try to upload view again
+                UploadManager.processQueue(getApplicationContext());
+            }
+        });
 
         uploadReceiver =
                 new AbstractUploadServiceReceiver() {
@@ -96,7 +107,13 @@ public class BaseActivity extends AppCompatActivity {
 
     private void updateWaitingViews(){
         TextView textView = (TextView) findViewById(R.id.navigation_drawer_text);
-        textView.setText(UploadManager.getQueueLength()+" views waiting to upload");
+        int viewsWaiting = UploadManager.getQueueLength();
+        textView.setText(viewsWaiting + " views waiting to upload");
+
+        if(viewsWaiting == 0){
+            RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.navigation_drawer_upload_helper_text);
+            relativeLayout.setVisibility(View.GONE);
+        }
     }
 
     private void selectItem(MenuItem view) {

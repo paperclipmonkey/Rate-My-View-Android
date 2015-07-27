@@ -83,7 +83,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(uk, 5));
 
         setUpClusterer();
-        getViews();//Get views when page opens
+        getViewsInBounds();//Get views when page opens
     }
 
     private void setUpClusterer() {
@@ -96,7 +96,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                                            @Override
                                            public void onCameraChange(CameraPosition cameraPosition) {
-                                               getViews();
+                                               getViewsInBounds();
 
                                                //Call the marker clusterer
                                                mClusterManager.onCameraChange(cameraPosition);
@@ -120,14 +120,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    private void getViews(){
+    private void getViewsInBounds(){
         //When changing camera need way of stopping first request
         //Then loading a new request
         VisibleRegion bounds = mMap.getProjection().getVisibleRegion();
-        LatLngBounds latlngb = bounds.latLngBounds;
+        LatLngBounds latLngBounds = bounds.latLngBounds;
 
         //Don't send 0,0 Lat/Lng to server
-        if(latlngb.southwest.longitude == 0 && latlngb.southwest.latitude == 0){
+        if(latLngBounds.southwest.longitude == 0 && latLngBounds.southwest.latitude == 0){
             return;
         }
         //Create points
@@ -135,56 +135,50 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         try {
             jBounds.put(new JSONArray()
                             .put(
-                                    latlngb.southwest.longitude
+                                    latLngBounds.southwest.longitude
                             )
                             .put(
-                                    latlngb.southwest.latitude
+                                    latLngBounds.southwest.latitude
                             )
             );
 
             jBounds.put(new JSONArray()
                             .put(
-                                    latlngb.southwest.longitude
+                                    latLngBounds.southwest.longitude
                                     //bounds.getLonEastE6() / 1E6
                             )
                             .put(
-                                    latlngb.northeast.latitude
+                                    latLngBounds.northeast.latitude
                                     //bounds.getLatNorthE6() / 1E6
                             )
             );
 
             jBounds.put(new JSONArray()
                             .put(
-                                    latlngb.northeast.longitude
+                                    latLngBounds.northeast.longitude
                                     //bounds.getLonEastE6() / 1E6
                             )
                             .put(
-                                    latlngb.northeast.latitude
+                                    latLngBounds.northeast.latitude
                                     //bounds.getLatSouthE6() / 1E6
                             )
             );
 
             jBounds.put(new JSONArray()
                             .put(
-                                    latlngb.northeast.longitude
+                                    latLngBounds.northeast.longitude
                                     //bounds.getLonWestE6() / 1E6
                             )
                             .put(
-                                    latlngb.southwest.latitude
+                                    latLngBounds.southwest.latitude
                                     //bounds.getLatSouthE6() / 1E6
                             )
             );
         } catch (JSONException e) {
         }
 
-
-
         String url = getString(R.string.base_url) + getString(R.string.views_query_path) + jBounds.toString();
         new DownloadViewsTask().execute(url);
-
-        //client.execute(url);
-
-        //System.out.println(jBounds.toString());
     }
 
     class DownloadViewsTask extends AsyncTask<String, String, String> {
@@ -223,7 +217,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         private String readInputStreamToString(HttpURLConnection connection) {
             String result = null;
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             InputStream is = null;
 
             try {
@@ -252,6 +246,39 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    public static RmVOverlayItem parseOverlayItem(JSONObject k){
+        try {
+            JSONArray locJSON = k.getJSONArray("loc");
+
+            LatLng loc = new LatLng(locJSON.getDouble(1),locJSON.getDouble(0));
+
+            //.icon(panoramicIcon)
+
+            RmVOverlayItem overlayItem = new RmVOverlayItem();
+            overlayItem.setPosition(loc);
+            overlayItem.setStringId(k.getString("id"));
+            overlayItem.setRating(k.getInt("rating"));
+            overlayItem.setTs(k.getString("ts"));
+            overlayItem.setComments(k.getString("comments"));
+            overlayItem.setHeading(k.getLong("heading"));
+
+            JSONArray words = k.getJSONArray("words");
+            String[] keyAttributes = new String[words.length()];
+            for(int i1 = 0; i1 < words.length(); i1++) {
+                keyAttributes[i1] = words.getString(i1);
+            }
+
+            overlayItem.setWordsArray(keyAttributes);
+            overlayItem.setPhoto(k.getString("photo"));
+
+            overlayItem.setPosition(loc);
+
+            return overlayItem;
+        } catch (JSONException e) {
+            return null;
+        }
+    }
+
     public void addJSON(JSONArray jsonFromNet){
         int i = 0;
         while( i < jsonFromNet.length() ){
@@ -259,38 +286,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             try {
                 k = jsonFromNet.getJSONObject(i);
 
-                if(markerData.get(k.getString("id")) == null){//If new
-                    JSONArray locJSON = k.getJSONArray("loc");
+                if(markerData.get(k.getString("id")) == null){//Check for duplicates
 
-                    LatLng loc = new LatLng(locJSON.getDouble(1),locJSON.getDouble(0));
+                    RmVOverlayItem overlayItem = parseOverlayItem(k);
 
-//                  .icon(panoramicIcon)
-
-                    RmVOverlayItem overlayItem = new RmVOverlayItem();
-                    overlayItem.setPosition(loc);
-                    overlayItem.setStringId(k.getString("id"));
-                    overlayItem.setRating(k.getInt("rating"));
-                    overlayItem.setTs(k.getString("ts"));
-                    overlayItem.setComments(k.getString("comments"));
-                    overlayItem.setHeading(k.getLong("heading"));
-
-                    JSONArray words = k.getJSONArray("words");
-                    String[] keyAttributes = new String[words.length()];
-                    for(int i1 = 0; i1 < words.length(); i1++) {
-                        keyAttributes[i1] = words.getString(i1);
+                    if(overlayItem != null) {
+                        mClusterManager.addItem(overlayItem);
+                        markerData.put(overlayItem.getStringId(), overlayItem);//Add to collection to check for duplicates
                     }
-
-                    overlayItem.setWordsArray(keyAttributes);
-                    overlayItem.setPhoto(k.getString("photo"));
-
-                    overlayItem.setPosition(loc);
-
-                    mClusterManager.addItem(overlayItem);
-
-                    markerData.put(overlayItem.getStringId(), overlayItem);
                 }
             } catch (JSONException e) {
-
             }
             i++;
         }

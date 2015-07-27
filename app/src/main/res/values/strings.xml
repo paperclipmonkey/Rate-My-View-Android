@@ -6,6 +6,7 @@
     <!-- URLs for the app to use -->
     <string name="base_url">http://ratemyview.co.uk/</string>
     <string name="upload_path">view/</string>
+    <string name="assets_path">assets/uploads/</string>
     <string name="views_query_path">views/?withinarea=</string>
     <string name="overlayTileUrl">http://tiles.ratemyview.co.uk.s3-website-eu-west-1.amazonaws.com/aonbs/{z}/{x}/{y}.png</string>
 
@@ -25,12 +26,7 @@ To do this we need to burrow beneath “that’s a nice view” and delve a litt
 \nIt’s easy, quick and good fun – have a go!</string>
     <string name="about_sponsors">Sponsors</string>
 
-
     <!-- My View Activity -->
-    <string-array name="array_pages">
-        <item>Map</item>
-        <item>About</item>
-    </string-array>
     <string-array name="array_age">
         <item>0-18</item>
         <item>19-24</item>

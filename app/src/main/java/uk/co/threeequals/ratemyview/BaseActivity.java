@@ -58,6 +58,8 @@ public class BaseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Try to upload view again
                 UploadManager.processQueue(getApplicationContext());
+                RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.navigation_drawer_upload_helper_text);
+                relativeLayout.setVisibility(View.GONE);
             }
         });
 
@@ -83,6 +85,10 @@ public class BaseActivity extends AppCompatActivity {
                                 + exception.getLocalizedMessage(), exception);
                         textView.setText(R.string.upload_failed);
                         progressBar.setVisibility(View.INVISIBLE);
+
+                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.navigation_drawer_upload_helper_text);
+                        relativeLayout.setVisibility(View.VISIBLE);
+
                         updateWaitingViews();
                     }
 
@@ -95,7 +101,11 @@ public class BaseActivity extends AppCompatActivity {
                                 + ". Response from server: " + serverResponseMessage);
 
                         //textView.setText(R.string.uploading_success);
-                        progressBar.setVisibility(View.INVISIBLE);
+                        progressBar.setVisibility(View.GONE);
+
+                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.navigation_drawer_upload_helper_text);
+                        relativeLayout.setVisibility(View.VISIBLE);
+
                         updateWaitingViews();
 
                         //If your server responds with a JSON, you can parse it
@@ -130,7 +140,6 @@ public class BaseActivity extends AppCompatActivity {
 
         // update selected item and title, then close the drawer
         mDrawerNav.getMenu().findItem(view.getItemId()).setChecked(true);
-        //setTitle(mPlanetTitles[position]);
         mDrawerLayout.closeDrawers();
     }
 

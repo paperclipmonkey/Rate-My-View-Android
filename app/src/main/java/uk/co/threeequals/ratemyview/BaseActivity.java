@@ -2,6 +2,7 @@ package uk.co.threeequals.ratemyview;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -12,9 +13,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -22,7 +20,7 @@ import com.alexbbb.uploadservice.AbstractUploadServiceReceiver;
 import com.alexbbb.uploadservice.UploadService;
 
 public class BaseActivity extends AppCompatActivity {
-    ListView mDrawerList;
+    NavigationView mDrawerNav;
     DrawerLayout mDrawerLayout;
     String TAGLISTEN = "RmVUploadListener";
     private AbstractUploadServiceReceiver uploadReceiver;
@@ -33,19 +31,19 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_fragment);
 
-        String[] mPageTitles = getResources().getStringArray(R.array.array_pages);
+        //String[] mPageTitles = getResources().getStringArray(R.array.array_pages);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.navigation_drawer_list);
+        mDrawerNav = (NavigationView) findViewById(R.id.navigation_drawer);
 
         // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPageTitles));
+//        mDrawerNav.setAdapter(new ArrayAdapter<String>(this,
+//                R.layout.drawer_list_item, mPageTitles));
         // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mDrawerNav.setNavigationItemSelectedListener(new MyOnNavigationItemSelectedListener());
 
         updateWaitingViews();
 
-        selectItem(0);
+        selectItem(mDrawerNav.getMenu().getItem(0));
 
         Intent intent = getIntent();
         if(intent != null && intent.getStringExtra("upload")!= null){
@@ -101,10 +99,10 @@ public class BaseActivity extends AppCompatActivity {
         textView.setText(UploadManager.getQueueLength()+" views waiting to upload");
     }
 
-    private void selectItem(int position) {
+    private void selectItem(MenuItem view) {
         // update the main content by replacing fragments
         Fragment fragment;
-        if(position == 0) {
+        if(view.getItemId() == R.id.navigation_item_1) {
              fragment = new MapsFragment();
         } else {
             fragment = new AboutFragment();
@@ -114,15 +112,16 @@ public class BaseActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
         // update selected item and title, then close the drawer
-        mDrawerList.setItemChecked(position, true);
+        mDrawerNav.getMenu().findItem(view.getItemId()).setChecked(true);
         //setTitle(mPlanetTitles[position]);
         mDrawerLayout.closeDrawers();
     }
 
-    class DrawerItemClickListener implements ListView.OnItemClickListener {
+    class MyOnNavigationItemSelectedListener implements NavigationView.OnNavigationItemSelectedListener {
         @Override
-        public void onItemClick(AdapterView parent, View view, int position, long id) {
-            selectItem(position);
+        public boolean onNavigationItemSelected(MenuItem view) {
+            selectItem(view);
+        return true;
         }
     }
 

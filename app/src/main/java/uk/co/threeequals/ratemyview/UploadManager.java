@@ -39,6 +39,13 @@ public class UploadManager extends BroadcastReceiver {
         }
     }
 
+    public static void processQueue(Context context){
+        List<RmVOverlayItem> views = RmVOverlayItem.listAll(RmVOverlayItem.class);
+        for(RmVOverlayItem r : views){
+            upload(context, r);
+        }
+    }
+
     public static int getQueueLength(){
         List<RmVOverlayItem> views = RmVOverlayItem.listAll(RmVOverlayItem.class);
         return views.size();

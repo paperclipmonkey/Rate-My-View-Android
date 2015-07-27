@@ -1,13 +1,20 @@
 package uk.co.threeequals.ratemyview;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.alexbbb.uploadservice.UploadRequest;
 import com.alexbbb.uploadservice.UploadService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -29,7 +36,7 @@ public class UploadManager extends BroadcastReceiver {
                     case UploadService.STATUS_COMPLETED:
                         final int responseCode = intent.getIntExtra(UploadService.SERVER_RESPONSE_CODE, 0);
                         final String responseMsg = intent.getStringExtra(UploadService.SERVER_RESPONSE_MESSAGE);
-                        onCompleted(uploadId, responseCode, responseMsg);
+                        onCompleted(context, uploadId, responseCode, responseMsg);
                         break;
 
                     default:
@@ -51,7 +58,8 @@ public class UploadManager extends BroadcastReceiver {
         return views.size();
     }
 
-    public void onCompleted(String uploadId,
+    public void onCompleted(Context context,
+                            String uploadId,
                             int serverResponseCode,
                             String serverResponseMessage) {
         Log.i(TAGLISTEN, "Upload with ID " + uploadId
@@ -67,10 +75,54 @@ public class UploadManager extends BroadcastReceiver {
             if(uploaded != null) {
                 uploaded.delete();
             }
+
+        try {
+            JSONObject jsonObject = new JSONObject(serverResponseMessage);
+            RmVOverlayItem rmVOverlayItem = MapsFragment.parseOverlayItem(jsonObject);
+            buildSuccessNotification(context, rmVOverlayItem);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
             //If your server responds with a JSON, you can parse it
             //from serverResponseMessage string using a library
             //such as org.json (embedded in Android) or google's gson
         //}
+    }
+
+    static public void buildSuccessNotification(Context context, RmVOverlayItem rmvOverlayItem){
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.app_icon_silhouette)
+                        .setContentTitle("Upload Successfull")
+                        .setContentText("Click to see uploaded view");
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(context, TheirViewActivity.class);
+        resultIntent.putExtra("object", rmvOverlayItem);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(TheirViewActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        //TODO - Fix issue of replacing previous notification
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify(0, mBuilder.build());
     }
 
     static public void upload(Context context, RmVOverlayItem rmvOverlayItem) {
@@ -109,7 +161,7 @@ public class UploadManager extends BroadcastReceiver {
                 context.getString(R.string.uploading_toast),
                 context.getString(R.string.uploading_success),
                 context.getString(R.string.upload_failed),
-                false);
+                true);//Clear on success
 
         // set the intent to perform when the user taps on the upload notification.
         // currently tested only with intents that launches an activity

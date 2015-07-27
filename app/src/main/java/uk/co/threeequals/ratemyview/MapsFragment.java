@@ -1,9 +1,11 @@
 package uk.co.threeequals.ratemyview;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +27,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
     GoogleMap mMap;
@@ -166,22 +177,80 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         } catch (JSONException e) {
         }
 
-        JSONClient client = new JSONClient(getActivity(), l);
+
+
         String url = getString(R.string.base_url) + getString(R.string.views_query_path) + jBounds.toString();
-        client.execute(url);
+        new DownloadViewsTask().execute(url);
+
+        //client.execute(url);
 
         //System.out.println(jBounds.toString());
     }
 
-    GetJSONListener l = new GetJSONListener(){
+    class DownloadViewsTask extends AsyncTask<String, String, String> {
+        private JSONArray jArray;
         @Override
-        public void onRemoteCallComplete(JSONArray jsonFromNet) {
-            if (jsonFromNet == null) {
-                return;
+        protected String doInBackground(String... uri) {
+            String responseString = null;
+            try {
+                URL url = new URL(uri[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                if(conn.getResponseCode() == HttpsURLConnection.HTTP_OK){
+                    responseString = readInputStreamToString(conn);
+                    try {
+                        jArray = new JSONArray(responseString);
+                    } catch (JSONException e) {
+                        Log.e("JSONException", "Error: " + e.toString());
+                    }
+                }
+                else {
+                    responseString = "FAILED"; // See documentation for more info on response handling
+                }
+            } catch (IOException e) {
+                //TODO Handle problems..
             }
-            addJSON(jsonFromNet);
+            return responseString;
         }
-    };
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if(jArray != null) {
+                addJSON(jArray);
+            }
+            //Do anything with response..
+        }
+
+        private String readInputStreamToString(HttpURLConnection connection) {
+            String result = null;
+            StringBuffer sb = new StringBuffer();
+            InputStream is = null;
+
+            try {
+                is = new BufferedInputStream(connection.getInputStream());
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String inputLine = "";
+                while ((inputLine = br.readLine()) != null) {
+                    sb.append(inputLine);
+                }
+                result = sb.toString();
+            }
+            catch (Exception e) {
+                result = null;
+            }
+            finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    }
+                    catch (IOException e) {
+                    }
+                }
+            }
+
+            return result;
+        }
+    }
 
     public void addJSON(JSONArray jsonFromNet){
         int i = 0;

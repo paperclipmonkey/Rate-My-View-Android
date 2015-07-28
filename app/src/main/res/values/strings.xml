@@ -4,8 +4,8 @@
     <string name="app_name">Rate My View</string>
 
     <!-- URLs for the app to use -->
-    <!--<string name="base_url">http://ratemyview.co.uk/</string>-->
-    <string name="base_url">http://192.168.1.107:3010/</string>
+    <string name="base_url">http://ratemyview.co.uk/</string>
+    <!--<string name="base_url">http://192.168.1.107:3010/</string>-->
     <string name="upload_path">view/</string>
     <string name="assets_path">assets/uploads/</string>
     <string name="views_query_path">views/?withinarea=</string>
@@ -21,7 +21,7 @@
     <string name="about_link">View your results online at <a href="http://ratemyview.co.uk">ratemyview.co.uk</a></string>
     <string name="about_tos_title">Terms of Service</string>
     <string name="about_tos_body">Once submitted, photos taken and submitted by Rate my View users are owned by the South Devon AONB and may be used for related website or project work in addition to Rate my View.</string>
-    <string name="about_body">Rate my View is an exciting new way to capture and share what you really feel about the local landscape! \n\n It is part of a project being run by the South Devon Area of Outstanding Natural Beauty (AONB) team to discover new ways of exploring landscapes, better understand how we all see them and to discover what we particularly value.
+    <string name="about_body">Rate my View is a new way to capture and share what you really feel about the local landscape. \n\nIt is part of a project being run by the South Devon Area of Outstanding Natural Beauty (AONB) team to discover new ways of exploring landscapes, better understand how we all see them and to discover what we particularly value.
 To do this we need to burrow beneath “that’s a nice view” and delve a little deeper to find out what we really think about our coast, estuaries, countryside and villages.
 \n\nBy taking part and rating your view, you will be adding your valuable piece of the jigsaw.
 \nIt’s easy, quick and good fun – have a go!</string>

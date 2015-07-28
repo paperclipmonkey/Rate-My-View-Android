@@ -66,41 +66,37 @@ public class UploadManager extends BroadcastReceiver {
                 + " has been completed with HTTP " + serverResponseCode
                 + ". Response from server: " + serverResponseMessage);
 
-        //if(serverResponseCode == 200) {
+        if(serverResponseCode == 200) {
+            try {
+                JSONObject jsonObject = new JSONObject(serverResponseMessage);
+                RmVOverlayItem rmVOverlayItem = MapsFragment.parseOverlayItem(jsonObject);
+                if(rmVOverlayItem != null) {
+                    buildSuccessNotification(context, rmVOverlayItem);
 
-            //Listen to all events
-            //On success of upload grab Id and remove from Db
-            //TODO - Check JSON response
-            RmVOverlayItem uploaded = RmVOverlayItem.findById(RmVOverlayItem.class, Long.parseLong(uploadId));
-            if(uploaded != null) {
-                uploaded.delete();
+                    //Search db for uploaded item
+                    RmVOverlayItem uploaded = RmVOverlayItem.findById(RmVOverlayItem.class, Long.parseLong(uploadId));
+                    if (uploaded != null) {
+                        uploaded.delete();//Delete from Db
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-
-        try {
-            JSONObject jsonObject = new JSONObject(serverResponseMessage);
-            RmVOverlayItem rmVOverlayItem = MapsFragment.parseOverlayItem(jsonObject);
-            buildSuccessNotification(context, rmVOverlayItem);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
-
-
-            //If your server responds with a JSON, you can parse it
-            //from serverResponseMessage string using a library
-            //such as org.json (embedded in Android) or google's gson
-        //}
     }
 
     static public void buildSuccessNotification(Context context, RmVOverlayItem rmvOverlayItem){
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.app_icon_silhouette)
-                        .setContentTitle("Upload Successfull")
+                        .setContentTitle("Upload Successful")
                         .setContentText("Click to see uploaded view");
+
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(context, TheirViewActivity.class);
         resultIntent.putExtra("object", rmvOverlayItem);
+
+        mBuilder.setAutoCancel(true);//Automatically dismiss on click
 
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
@@ -121,6 +117,7 @@ public class UploadManager extends BroadcastReceiver {
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         //TODO - Fix issue of replacing previous notification
+
         // mId allows you to update the notification later on.
         mNotificationManager.notify(0, mBuilder.build());
     }

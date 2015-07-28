@@ -40,8 +40,8 @@ public class TheirViewActivity extends AppCompatActivity {
 		TextView ts = (TextView) findViewById(R.id.theirTs);
 		ts.setText("Uploaded: " + item.getTs());
 		
-		TextView heading = (TextView) findViewById(R.id.theirHeading);
-		heading.setText("Heading: " + item.getHeading() + getString(R.string.degree_symbol));
+//		TextView heading = (TextView) findViewById(R.id.theirHeading);
+//		heading.setText("Heading: " + item.getHeading() + getString(R.string.degree_symbol));
 		
 		TextView words = (TextView) findViewById(R.id.theirWords);
 		words.setText("");//Blank

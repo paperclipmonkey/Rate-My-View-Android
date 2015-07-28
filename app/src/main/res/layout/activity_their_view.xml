@@ -120,11 +120,11 @@
 			      	    android:layout_height="wrap_content"
 			      	    android:text="Uploaded: 01/01/1970"/>
 				   	
-				   	<TextView
-			      	    android:id="@+id/theirHeading"
-		                android:layout_width="fill_parent"
-			      	    android:layout_height="wrap_content"
-			      	    android:text="Heading: 0°"/>
+				   	<!--<TextView-->
+			      	    <!--android:id="@+id/theirHeading"-->
+		                <!--android:layout_width="fill_parent"-->
+			      	    <!--android:layout_height="wrap_content"-->
+			      	    <!--android:text="Heading: 0°"/>-->
 			      	
 				</LinearLayout>
 	    </LinearLayout>

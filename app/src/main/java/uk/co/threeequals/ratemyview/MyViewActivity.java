@@ -43,6 +43,7 @@ public class MyViewActivity extends AppCompatActivity {
     private LatLng position;
     private long heading;
     private LocationManager locationManager;
+    static final int PICTURE_REQUEST_CODE = 1;
 
 
     @Override
@@ -57,7 +58,7 @@ public class MyViewActivity extends AppCompatActivity {
 		mImageUri = null;
 
         if(savedInstanceState == null || savedInstanceState.getString("image") == null) {//Check if null
-            dispatchTakePictureIntent(11);
+            dispatchTakePictureIntent();
         }
 		//checkForUnsaved();
 	}
@@ -171,28 +172,56 @@ public class MyViewActivity extends AppCompatActivity {
 	    }
 	    return File.createTempFile(part, ext, tempDir);
 	}
-	
-	private void dispatchTakePictureIntent(int actionCode) {
-	    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	    File photo;
-	    try {
-	        // location to store photo taken
-	        photo = this.createTemporaryFile("picture", ".jpg");
-	        photo.delete();
-	    } catch(Exception e) {
-	        Toast.makeText(getBaseContext(), "Please check SD card! Image shot is impossible!", Toast.LENGTH_LONG).show();
-	        return;
-	    }
-	    mImageUri = Uri.fromFile(photo);
-	    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
 
-	    //start camera intent
-	    startActivityForResult(takePictureIntent, actionCode);
-	}
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(photoFile));
+                startActivityForResult(takePictureIntent, PICTURE_REQUEST_CODE);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_RmV_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        mImageUri = Uri.parse("file:" + image.getAbsolutePath());
+        // Save a file: path for use with ACTION_VIEW intents
+        return image;
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mImageUri.getPath());
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
 	
 	protected void onActivityResult (int requestCode, int resultCode, Intent data){
-		if(requestCode==11 && resultCode==RESULT_OK){
-			this.resizeImage();
+		if(requestCode==PICTURE_REQUEST_CODE && resultCode==RESULT_OK){
+			resizeImage();
+            galleryAddPic();
             determineLocationGps();//Grab location and heading
 		} else {
 			finish();//Return to previous activity

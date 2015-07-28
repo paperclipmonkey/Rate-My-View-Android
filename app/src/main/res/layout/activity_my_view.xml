@@ -12,206 +12,170 @@
         android:orientation="vertical"
         android:showDividers="end" >
 
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/previewImage"
+            android:contentDescription="@string/myview_photodescription"
+            android:layout_width="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:descendantFocusability="beforeDescendants"
-            android:focusableInTouchMode="true"
-            android:minHeight="80dp" >
-
-            <ImageView
-                android:id="@+id/previewImage"
-                android:contentDescription="@string/myview_photodescription"
-                android:layout_width="match_parent"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:layout_height="match_parent"/>
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/android_padding_text_sides"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/android_padding_text_sides"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:showDividers="end" >
 
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="@dimen/android_padding_text_sides"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/android_padding_text_sides"
                 android:text="@string/myview_description" />
 
+            <TextView
+                android:id="@+id/labelRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/myview_rating"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        </RelativeLayout>
+            <View android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                />
 
-        <TextView
-            android:id="@+id/labelRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginTop="@dimen/android_padding_text_sides"
-            android:text="@string/myview_rating"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            <RatingBar
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:numStars="5"
+                android:stepSize="1"
+                android:layout_height="wrap_content" />
+                <!-- style="@style/rmvRatingBar" -->
 
-        <View android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            />
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/myview_phrases"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <RatingBar
-            android:id="@+id/rating"
-            android:layout_width="wrap_content"
-            android:numStars="5"
-            android:stepSize="1"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:layout_height="wrap_content" />
-            <!-- style="@style/rmvRatingBar" -->
+            <View android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                />
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginTop="@dimen/android_padding_text_sides"
-            android:text="Phrases"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            <TextView
+                android:id="@+id/labelWords"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/myview_words" />
 
-        <View android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            />
+            <TextView
+                android:id="@+id/labelWordOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/myview_wordone" />
 
-        <TextView
-            android:id="@+id/labelWords"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:text="@string/myview_words" />
+            <EditText
+                android:id="@+id/wordOne"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:singleLine="true" />
 
-        <TextView
-            android:id="@+id/labelWordOne"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:text="@string/myview_wordone" />
+            <TextView
+                android:id="@+id/labelWordTwo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/myview_wordtwo" />
 
-        <EditText
-            android:id="@+id/wordOne"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:ems="10"
-            android:inputType="text"
-            android:singleLine="true" />
+            <EditText
+                android:id="@+id/wordTwo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:inputType="text"
+                android:ems="10" />
 
-        <TextView
-            android:id="@+id/labelWordTwo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:text="@string/myview_wordtwo" />
+            <TextView
+                android:id="@+id/labelWordThree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/myview_wordthree" />
+            <EditText
+                android:id="@+id/wordThree"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:inputType="text"
+                android:ems="10" />
 
-        <EditText
-            android:id="@+id/wordTwo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:inputType="text"
-            android:ems="10" />
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/android_padding_text_sides"
+                android:text="@string/myview_about_you"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <TextView
-            android:id="@+id/labelWordThree"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:text="@string/myview_wordthree" />
-        <EditText
-            android:id="@+id/wordThree"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:singleLine="true"
-            android:inputType="text"
-            android:ems="10" />
+            <View android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:layout_marginTop="@dimen/android_padding_text_sides"
-            android:text="About You"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            <TextView
+                android:id="@+id/labelAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/myview_age" />
+            <Spinner
+                android:id="@+id/ageSpinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:drawSelectorOnTop="true"
+                android:entries="@array/array_age"/>
 
-        <View android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            />
+            <TextView
+                android:id="@+id/labelKnow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/myview_know" />
+            <Spinner
+                android:id="@+id/knowSpinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:drawSelectorOnTop="true"
+                android:entries="@array/array_know"/>
 
-        <TextView
-            android:id="@+id/labelAge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:text="@string/myview_age" />
-        <Spinner
-            android:id="@+id/ageSpinner"
-            android:layout_width="fill_parent"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:layout_height="wrap_content"
-            android:drawSelectorOnTop="true"
-            android:entries="@array/array_age"/>
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/android_padding_text_sides"
+                android:text="@string/myview_comments_header"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <TextView
-            android:id="@+id/labelKnow"
-            android:layout_width="wrap_content"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:layout_height="wrap_content"
-            android:text="@string/myview_know" />
-        <Spinner
-            android:id="@+id/knowSpinner"
-            android:layout_width="fill_parent"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:layout_height="wrap_content"
-            android:drawSelectorOnTop="true"
-            android:entries="@array/array_know"/>
+            <View android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                />
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:layout_marginTop="@dimen/android_padding_text_sides"
-            android:text="Comments"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+           <TextView
+                android:id="@+id/labelComments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/myview_comments_string" />
 
-        <View android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            />
+            <EditText
+                android:id="@+id/comments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:ems="10" />
 
-       <TextView
-            android:id="@+id/labelComments"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:text="Are there any comments you'd like to share about this view?" />
-
-        <EditText
-            android:id="@+id/comments"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="@dimen/android_padding_text_sides"
-            android:layout_marginRight="@dimen/android_padding_text_sides"
-            android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:ems="10" />
+        </LinearLayout>
 
     </LinearLayout>
 	    

@@ -20,33 +20,34 @@ import android.widget.TextView;
 
 import com.alexbbb.uploadservice.AbstractUploadServiceReceiver;
 import com.alexbbb.uploadservice.UploadService;
+import com.google.android.gms.analytics.Tracker;
 
 public class BaseActivity extends AppCompatActivity {
     NavigationView mDrawerNav;
     DrawerLayout mDrawerLayout;
+    public static Tracker tracker;
+
     String TAGLISTEN = "RmVUploadListener";
     private AbstractUploadServiceReceiver uploadReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         UploadService.NAMESPACE = getString(R.string.upload_namespace);
 
-        super.onCreate(savedInstanceState);
+        //Set up Google Analytics
+        RmVApplication application = (RmVApplication) getApplication();
+        tracker = application.getDefaultTracker();
+
         setContentView(R.layout.activity_base_fragment);
 
-        //String[] mPageTitles = getResources().getStringArray(R.array.array_pages);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerNav = (NavigationView) findViewById(R.id.navigation_drawer);
-
-        // Set the adapter for the list view
-//        mDrawerNav.setAdapter(new ArrayAdapter<String>(this,
-//                R.layout.drawer_list_item, mPageTitles));
-        // Set the list's click listener
         mDrawerNav.setNavigationItemSelectedListener(new MyOnNavigationItemSelectedListener());
 
         updateWaitingViews();
 
-        selectItem(mDrawerNav.getMenu().getItem(0));
-
+        //Intent wants to know the status of the upload
         Intent intent = getIntent();
         if(intent != null && intent.getStringExtra("upload")!= null){
             openMenu();
@@ -113,6 +114,9 @@ public class BaseActivity extends AppCompatActivity {
                         //such as org.json (embedded in Android) or google's gson
                     }
                 };
+
+        //Load map fragment
+        selectItem(mDrawerNav.getMenu().getItem(0));
     }
 
     private void updateWaitingViews(){

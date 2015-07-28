@@ -16,6 +16,7 @@ import com.alexbbb.uploadservice.UploadService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -73,15 +74,19 @@ public class UploadManager extends BroadcastReceiver {
                 if(rmVOverlayItem != null) {
                     buildSuccessNotification(context, rmVOverlayItem);
 
-                    //Search db for uploaded item
-                    RmVOverlayItem uploaded = RmVOverlayItem.findById(RmVOverlayItem.class, Long.parseLong(uploadId));
-                    if (uploaded != null) {
-                        uploaded.delete();//Delete from Db
-                    }
+                    deleteUpload(Long.parseLong(uploadId));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    static public void deleteUpload(Long uploadId){
+        //Search db for uploaded item
+        RmVOverlayItem uploaded = RmVOverlayItem.findById(RmVOverlayItem.class, uploadId);
+        if (uploaded != null) {
+            uploaded.delete();//Delete from Db
         }
     }
 
@@ -134,6 +139,14 @@ public class UploadManager extends BroadcastReceiver {
      * custom-file-name.extension: is the file name seen by the server.
      * E.g. value of $_FILES["uploaded_file"]["name"] of the test PHP script
      */
+
+        File file = new File(rmvOverlayItem.getPhotoLocation());
+        if(!file.exists()){
+            Toast.makeText(context, "Photo has been removed. Deleting upload...", Toast.LENGTH_LONG).show();
+            deleteUpload(rmvOverlayItem.getId());
+            return;
+        }
+
 
         request.addFileToUpload(rmvOverlayItem.getPhotoLocation(),
                 "image",

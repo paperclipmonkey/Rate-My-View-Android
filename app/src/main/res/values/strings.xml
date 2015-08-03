@@ -30,6 +30,7 @@ To do this we need to burrow beneath “that’s a nice view” and delve a litt
 
     <!-- My View Activity -->
     <string-array name="array_age">
+        <item>Please select</item>
         <item>0-18</item>
         <item>19-24</item>
         <item>25-44</item>
@@ -37,6 +38,7 @@ To do this we need to burrow beneath “that’s a nice view” and delve a litt
         <item>65+</item>
     </string-array>
     <string-array name="array_know">
+        <item>Please select</item>
         <item>Not at all</item>
         <item>Not very well</item>
         <item>Very well</item>

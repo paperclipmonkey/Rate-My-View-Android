@@ -327,7 +327,7 @@ public class MyViewActivity extends AppCompatActivity {
         String  wordOne = wordOneTextField.getText().toString();
         
         if(wordOne.length()<1) {//display message if text field is empty
-            Toast.makeText(getBaseContext(),"Word one is required",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(),"Word one is required",Toast.LENGTH_LONG).show();
             return;
         }
         
@@ -335,7 +335,7 @@ public class MyViewActivity extends AppCompatActivity {
         String  wordTwo = wordTwoTextField.getText().toString();
         
         if(wordTwo.length()<1) {//display message if text field is empty
-            Toast.makeText(getBaseContext(),"Word two is required",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(),"Word two is required",Toast.LENGTH_LONG).show();
             return;
         }
         
@@ -343,15 +343,23 @@ public class MyViewActivity extends AppCompatActivity {
         String  wordThree = wordThreeTextField.getText().toString();
         
         if(wordThree.length()<1) {//display message if text field is empty
-            Toast.makeText(getBaseContext(),"Word three is required",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(),"Word three is required",Toast.LENGTH_LONG).show();
             return;
         }
         
         Spinner ageSpinnerField = (Spinner) findViewById(R.id.ageSpinner);
         String  age = (String) ageSpinnerField.getSelectedItem();
-        
+        if(ageSpinnerField.getSelectedItemPosition() == 0){
+            Toast.makeText(getBaseContext(),"Please select your age",Toast.LENGTH_LONG).show();
+            return;
+        }
+
         Spinner knowSpinnerField = (Spinner) findViewById(R.id.knowSpinner);
         String  know = (String) knowSpinnerField.getSelectedItem();
+        if(knowSpinnerField.getSelectedItemPosition() == 0){
+            Toast.makeText(getBaseContext(),"Please select how well you know you know this location",Toast.LENGTH_LONG).show();
+            return;
+        }
         
         RatingBar ratingField = (RatingBar) findViewById(R.id.rating);
         int  rating = ratingField.getNumStars();

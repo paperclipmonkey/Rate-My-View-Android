@@ -139,15 +139,27 @@ public class BaseActivity extends AppCompatActivity {
 
     private void selectItem(MenuItem view) {
         // update the main content by replacing fragments
+        //TODO cleanup so about fragment isn't converted to Map on rotation
+
         Fragment fragment;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment existingFragment;
+
+
         if(view.getItemId() == R.id.navigation_item_1) {
-             fragment = new MapsFragment();
+            fragment = new MapsFragment();
+            existingFragment = getSupportFragmentManager().findFragmentByTag("MapFragment");
+            if (existingFragment != null && existingFragment.getClass().equals(fragment.getClass()))
+            {
+                Log.d("activity","Returning");
+                return; //nothing to do, because the fragment is already there
+            }
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment, "MapFragment").commit();
         } else {
             fragment = new AboutFragment();
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment, "AboutFragment").commit();
         }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
         // update selected item and title, then close the drawer
         mDrawerNav.getMenu().findItem(view.getItemId()).setChecked(true);

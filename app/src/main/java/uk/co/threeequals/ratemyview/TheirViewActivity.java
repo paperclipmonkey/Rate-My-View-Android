@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.io.File;
@@ -29,8 +30,8 @@ public class TheirViewActivity extends AppCompatActivity {
 		
 		RmVOverlayItem item = extras.getParcelable("object");
 		
-		TextView rating = (TextView) findViewById(R.id.theirRating);
-		rating.setText(item.getRating() + "/5");
+		RatingBar rating = (RatingBar) findViewById(R.id.theirRating);
+		rating.setRating(item.getRating());
 	
 		TextView comments = (TextView) findViewById(R.id.theirComments);
 

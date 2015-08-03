@@ -61,15 +61,13 @@
 			   	<View android:layout_width="fill_parent" 
 			   	    android:layout_height="1dip"
 			   	    />
-			    
-       		    <TextView
-	                android:id="@+id/theirRating"
-	                android:layout_width="fill_parent"
-	                android:layout_height="wrap_content"
-	                android:text="0/5"
-	                android:textSize="@dimen/title_size_new"/>
-			      	
-					<TextView
+
+				<RatingBar
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:id="@+id/theirRating" />
+
+				<TextView
 				   	    android:layout_marginTop="@dimen/android_padding_text_sides"
 				   	    android:layout_width="wrap_content"
 				   	    android:layout_height="wrap_content"

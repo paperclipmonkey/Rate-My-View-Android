@@ -91,7 +91,7 @@ public class TheirViewActivity extends AppCompatActivity {
 	}
 	
 	private void loadImageFromUrl(String photoUrl){
-        photoUrl = getString(R.string.base_url) + getString(R.string.assets_path) + photoUrl;
+        photoUrl = getString(R.string.assets_domain) + getString(R.string.assets_path) + photoUrl;
         new DownloadImageTask((ImageView) findViewById(R.id.theirImage))
                 .execute(photoUrl);
 	}

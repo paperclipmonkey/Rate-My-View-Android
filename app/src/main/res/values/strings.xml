@@ -8,7 +8,7 @@
     <string name="base_url">http://192.168.1.107:3010/</string>
     <string name="upload_path">view/</string>
     <string name="assets_domain">http://static.ratemyview.co.uk</string>
-    <string name="assets_path">assets/uploads/</string>
+    <string name="assets_path">/uploads/</string>
     <string name="views_query_path">views/?withinarea=</string>
     <string name="overlayTileUrl">http://tiles.ratemyview.co.uk.s3-website-eu-west-1.amazonaws.com/aonbs/{z}/{x}/{y}.png</string>
 

@@ -108,7 +108,13 @@ public class BaseActivity extends AppCompatActivity {
                         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.navigation_drawer_upload_helper_text);
                         relativeLayout.setVisibility(View.VISIBLE);
 
-                        updateWaitingViews();
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateWaitingViews();
+                            }
+                        },1000); //adding one sec delay
 
                         //If your server responds with a JSON, you can parse it
                         //from serverResponseMessage string using a library

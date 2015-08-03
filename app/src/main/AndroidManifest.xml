@@ -88,6 +88,14 @@
                 android:value=".BaseActivity" />
         </activity>
 
+        <activity
+            android:name="uk.co.threeequals.ratemyview.TheirImageActivity"
+            android:label="@string/title_activity_their_image" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".BaseActivity" />
+        </activity>
+
 
         <receiver
             android:name="UploadManager">

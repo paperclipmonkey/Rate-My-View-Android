@@ -136,10 +136,7 @@ public class MyViewActivity extends AppCompatActivity {
 		super.onResume();
         //checkForUnsaved();
 	}
-	
-    protected void onStop(){
-    	super.onStop();
-    }
+
 	
 	public Bitmap getResizedBitmap(Bitmap bm, float newHeight, float newWidth) {
 	    int width = bm.getWidth();

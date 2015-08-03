@@ -101,10 +101,7 @@ public class TheirViewActivity extends AppCompatActivity {
 		Bitmap myBitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
 		img.setImageBitmap(myBitmap);
 	}
-	
-    protected void onStop(){
-    	super.onStop();
-    }
+
     
 	@Override
 	public void onPause() {
@@ -117,7 +114,7 @@ public class TheirViewActivity extends AppCompatActivity {
 	}
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
+        final ImageView bmImage;
 
         public DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;

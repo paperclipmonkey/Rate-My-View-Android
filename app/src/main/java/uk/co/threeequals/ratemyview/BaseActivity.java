@@ -2,6 +2,7 @@ package uk.co.threeequals.ratemyview;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,7 +28,7 @@ public class BaseActivity extends AppCompatActivity {
     DrawerLayout mDrawerLayout;
     public static Tracker tracker;
 
-    String TAGLISTEN = "RmVUploadListener";
+    final String TAGLISTEN = "RmVUploadListener";
     private AbstractUploadServiceReceiver uploadReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +67,8 @@ public class BaseActivity extends AppCompatActivity {
 
         uploadReceiver =
                 new AbstractUploadServiceReceiver() {
-                    ProgressBar progressBar = (ProgressBar) findViewById(R.id.navigation_drawer_progress);
-                    TextView textView = (TextView) findViewById(R.id.navigation_drawer_text);
+                    final ProgressBar progressBar = (ProgressBar) findViewById(R.id.navigation_drawer_progress);
+                    final TextView textView = (TextView) findViewById(R.id.navigation_drawer_text);
 
                     @Override
                     public void onProgress(String uploadId, int progress) {
@@ -97,9 +98,9 @@ public class BaseActivity extends AppCompatActivity {
                     public void onCompleted(String uploadId,
                                             int serverResponseCode,
                                             String serverResponseMessage) {
-                        Log.i(TAGLISTEN, "Upload with ID " + uploadId
-                                + " has been completed with HTTP " + serverResponseCode
-                                + ". Response from server: " + serverResponseMessage);
+//                        Log.i(TAGLISTEN, "Upload with ID " + uploadId
+//                                + " has been completed with HTTP " + serverResponseCode
+//                                + ". Response from server: " + serverResponseMessage);
 
                         //textView.setText(R.string.uploading_success);
                         progressBar.setVisibility(View.GONE);

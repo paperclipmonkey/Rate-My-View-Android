@@ -1,7 +1,14 @@
 package com.alexbbb.uploadservice;
 
+import android.annotation.SuppressLint;
+import android.app.IntentService;
+import android.app.NotificationManager;
+import android.content.Intent;
+import android.os.PowerManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
+
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,14 +18,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-
-import android.annotation.SuppressLint;
-import android.app.IntentService;
-import android.app.NotificationManager;
-import android.content.Intent;
-import android.os.PowerManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.Builder;
 
 /**
  * Service to upload files as a multi-part form data in background using HTTP POST with notification center progress
@@ -299,7 +298,7 @@ public class UploadService extends IntentService {
     }
 
     private void setRequestParameters(final OutputStream requestStream, final ArrayList<NameValue> requestParameters,
-                                      final byte[] boundaryBytes) throws IOException, UnsupportedEncodingException {
+                                      final byte[] boundaryBytes) throws IOException {
         if (!requestParameters.isEmpty()) {
 
             for (final NameValue parameter : requestParameters) {
@@ -331,9 +330,8 @@ public class UploadService extends IntentService {
             void
             uploadFiles(final String uploadId, final OutputStream requestStream,
                         final ArrayList<FileToUpload> filesToUpload, final byte[] boundaryBytes)
-                                                                                                throws UnsupportedEncodingException,
-                                                                                                IOException,
-                                                                                                FileNotFoundException {
+                                                                                                throws
+            IOException {
 
         final long totalBytes = getTotalBytes(filesToUpload);
         long uploadedBytes = 0;

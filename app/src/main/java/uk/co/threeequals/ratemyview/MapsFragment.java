@@ -43,6 +43,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     BitmapDescriptor panoramicIcon;
     HashMap<String, RmVOverlayItem> markerData;
     ClusterManager<RmVOverlayItem> mClusterManager;
+    LatLng startLatLng;
+    float startZoom;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,7 +66,33 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
         markerData = new HashMap<>();
 
+            try{
+                Log.d("restored instance lat"," "+ savedInstanceState.getDouble("latitude"));
+                Double lat = savedInstanceState.getDouble("latitude");
+                Double lng = savedInstanceState.getDouble("longitude");
+                startZoom = savedInstanceState.getFloat("zoom");
+                startLatLng = new LatLng(lat,lng);
+                Log.d("e", "got restored correctly");
+            } catch (Exception e){
+                Log.e("error", e.getLocalizedMessage());
+                startLatLng = new LatLng(50.24344,-3.866643);
+                startZoom = 5f;
+            }
+
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        Log.d("Saving", "Saving instance state");
+        super.onSaveInstanceState(savedInstanceState);
+        if(mMap!=null) {
+            LatLng position = mMap.getCameraPosition().target;
+            float zoom = mMap.getCameraPosition().zoom;
+            savedInstanceState.putDouble("latitude", position.latitude);
+            savedInstanceState.putDouble("longitude", position.longitude);
+            savedInstanceState.putFloat("zoom", zoom);
+        }
     }
 
     @Override
@@ -79,8 +107,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         .zIndex(1));
 
         //Move the camera.
-        LatLng uk = new LatLng(50.24344,-3.866643);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(uk, 5));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(startLatLng, startZoom));
 
         setUpClusterer();
         getViewsInBounds();//Get views when page opens

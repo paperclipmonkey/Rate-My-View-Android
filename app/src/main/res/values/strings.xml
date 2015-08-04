@@ -4,8 +4,8 @@
     <string name="app_name">Rate My View</string>
 
     <!-- URLs for the app to use -->
-    <!--<string name="base_url">http://ratemyview.co.uk/</string>-->
-    <string name="base_url">http://beta.ratemyview.co.uk/</string>
+    <string name="base_url">http://ratemyview.co.uk/</string>
+    <!--<string name="base_url">http://beta.ratemyview.co.uk/</string>-->
     <!--<string name="base_url">http://192.168.1.107:3010/</string>-->
     <string name="upload_path">view/</string>
     <string name="assets_domain">http://static.ratemyview.co.uk</string>

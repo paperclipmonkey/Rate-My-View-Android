@@ -129,7 +129,7 @@ public class BaseActivity extends AppCompatActivity {
     private void updateWaitingViews(){
         TextView textView = (TextView) findViewById(R.id.navigation_drawer_text);
         int viewsWaiting = UploadManager.getQueueLength();
-        textView.setText(viewsWaiting + " views waiting to upload");
+        textView.setText(viewsWaiting + getString(R.string.upload_count));
 
         if(viewsWaiting == 0){
             RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.navigation_drawer_upload_helper_text);
@@ -151,7 +151,6 @@ public class BaseActivity extends AppCompatActivity {
             existingFragment = getSupportFragmentManager().findFragmentByTag("MapFragment");
             if (existingFragment != null && existingFragment.getClass().equals(fragment.getClass()))
             {
-                Log.d("activity","Returning");
                 return; //nothing to do, because the fragment is already there
             }
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment, "MapFragment").commit();

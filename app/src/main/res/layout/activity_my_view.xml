@@ -83,6 +83,7 @@
                 android:id="@+id/wordOne"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Trees"
                 android:ems="10"
                 android:inputType="text"
                 android:singleLine="true" />
@@ -97,6 +98,7 @@
                 android:id="@+id/wordTwo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Grass"
                 android:singleLine="true"
                 android:inputType="text"
                 android:ems="10" />
@@ -104,12 +106,14 @@
             <TextView
                 android:id="@+id/labelWordThree"
                 android:layout_width="wrap_content"
+
                 android:layout_height="wrap_content"
                 android:text="@string/myview_wordthree" />
             <EditText
                 android:id="@+id/wordThree"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="River"
                 android:singleLine="true"
                 android:inputType="text"
                 android:ems="10" />

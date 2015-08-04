@@ -5,7 +5,8 @@
 
     <!-- URLs for the app to use -->
     <!--<string name="base_url">http://ratemyview.co.uk/</string>-->
-    <string name="base_url">http://192.168.1.107:3010/</string>
+    <string name="base_url">http://beta.ratemyview.co.uk/</string>
+    <!--<string name="base_url">http://192.168.1.107:3010/</string>-->
     <string name="upload_path">view/</string>
     <string name="assets_domain">http://static.ratemyview.co.uk</string>
     <string name="assets_path">/uploads/</string>
@@ -107,5 +108,6 @@ To do this we need to burrow beneath “that’s a nice view” and delve a litt
     <string name="uploading_toast">Uploading…</string>
     <string name="uploading_success">view uploaded successfully</string>
     <string name="upload_failed">Could not upload view</string>
+    <string name="upload_count"> view(s) waiting to upload</string>
 
-</resources>
+ </resources>

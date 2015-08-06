@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="uk.co.threeequals.ratemyview"
-    android:versionCode="11"
-    android:versionName="5">
+    android:versionCode="14"
+    android:versionName="5.03">
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -28,12 +28,12 @@
         <!-- Sugar ORM -->
         <meta-data android:name="DATABASE" android:value="ratemyview.db" />
         <meta-data android:name="VERSION" android:value="1" />
-        <meta-data android:name="QUERY_LOG" android:value="true" />
+        <meta-data android:name="QUERY_LOG" android:value="false" />
         <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="uk.co.threeequals.ratemyview" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA74_rzek4lAlRLhV_gyUrX-QBbLAoJZbw"/>
+            android:value="AIzaSyBQREbpnyYxQg0V8NY7neKp6vDkskePRlM"/>
 
         <!-- Add the following meta-data for devices running Google Play service. -->
         <meta-data

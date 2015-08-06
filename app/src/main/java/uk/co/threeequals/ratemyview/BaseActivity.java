@@ -72,8 +72,8 @@ public class BaseActivity extends AppCompatActivity {
 
                     @Override
                     public void onProgress(String uploadId, int progress) {
-                        Log.i(TAGLISTEN, "The progress of the upload with ID "
-                                + uploadId + " is: " + progress);
+                        //Log.i(TAGLISTEN, "The progress of the upload with ID "
+                        //        + uploadId + " is: " + progress);
 
                         textView.setText(R.string.uploading_toast);
 

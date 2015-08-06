@@ -67,14 +67,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         markerData = new HashMap<>();
 
             try{
-                Log.d("restored instance lat"," "+ savedInstanceState.getDouble("latitude"));
                 Double lat = savedInstanceState.getDouble("latitude");
                 Double lng = savedInstanceState.getDouble("longitude");
                 startZoom = savedInstanceState.getFloat("zoom");
                 startLatLng = new LatLng(lat,lng);
-                Log.d("e", "got restored correctly");
             } catch (Exception e){
-                Log.e("error", e.getLocalizedMessage());
+                //Log.e("error", e.getMessage());
                 startLatLng = new LatLng(50.24344,-3.866643);
                 startZoom = 5f;
             }
@@ -84,7 +82,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        Log.d("Saving", "Saving instance state");
+        //Log.d("Saving", "Saving instance state");
         super.onSaveInstanceState(savedInstanceState);
         if(mMap!=null) {
             LatLng position = mMap.getCameraPosition().target;

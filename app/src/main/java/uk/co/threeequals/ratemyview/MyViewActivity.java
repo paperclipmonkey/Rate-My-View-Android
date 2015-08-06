@@ -16,7 +16,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -66,8 +65,7 @@ public class MyViewActivity extends AppCompatActivity {
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
-		//System.out.println("Saving instance state");
-	  
+
 		//Compass
 		savedInstanceState.putLong("heading", heading);
 
@@ -260,9 +258,9 @@ public class MyViewActivity extends AppCompatActivity {
 
 	    } catch (Exception e) {
 	        Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
-	        Log.d("Rmv", e.getLocalizedMessage(), e);
+	        //Log.d("Rmv", e.getMessage(), e);
 	    } catch(java.lang.Throwable e){
-            Log.d("Rmv", e.getLocalizedMessage(), e);
+            //Log.d("Rmv", e.getMessage(), e);
             Toast.makeText(getBaseContext(),"Photo not available",Toast.LENGTH_SHORT).show();
 	    }
 	}
@@ -277,7 +275,7 @@ public class MyViewActivity extends AppCompatActivity {
         }
         float[] latLong = new float[2];
         if (exif != null && exif.getLatLong(latLong)) {
-            Log.d("Location", "Location set by Photo");
+            //Log.d("Location", "Location set by Photo");
             position = new LatLng(latLong[0], latLong[1]);
         } else {
             determineLocationGps();//Get position from GPS

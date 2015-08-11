@@ -287,7 +287,7 @@ public class MyViewActivity extends AppCompatActivity {
         String locationProvider = LocationManager.GPS_PROVIDER;
         Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
         if(lastKnownLocation != null &&
-            lastKnownLocation.getTime() < new Date().getTime() + (1000 *45)//Less than 45 seconds old
+            lastKnownLocation.getTime() < new Date().getTime() - (1000 *45)//Less than 45 seconds old
             && lastKnownLocation.getAccuracy() < 50//Accuracy
         ){
             //Log.d("Accurary", "" + lastKnownLocation.getAccuracy());
@@ -305,6 +305,8 @@ public class MyViewActivity extends AppCompatActivity {
                 //Log.d("Location", "Location set by GPS Listener");
                 //Log.d("Accurary", "" + location.getAccuracy());
                 position = new LatLng(location.getLatitude(), location.getLongitude());
+                if(location.getAccuracy() < 10)
+                    locationManager.removeUpdates(this);
             }
         }
 

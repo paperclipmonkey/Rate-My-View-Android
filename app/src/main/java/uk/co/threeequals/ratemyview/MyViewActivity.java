@@ -360,7 +360,7 @@ public class MyViewActivity extends AppCompatActivity {
         }
         
         RatingBar ratingField = (RatingBar) findViewById(R.id.rating);
-        int  rating = ratingField.getNumStars();
+        int  rating = (int) ratingField.getRating();
         
     	String imageLoc;
 		imageLoc = mImageUri.getPath();

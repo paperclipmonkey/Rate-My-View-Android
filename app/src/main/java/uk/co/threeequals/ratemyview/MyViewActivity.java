@@ -287,7 +287,7 @@ public class MyViewActivity extends AppCompatActivity {
         String locationProvider = LocationManager.GPS_PROVIDER;
         Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
         if(lastKnownLocation != null &&
-            lastKnownLocation.getTime() < new Date().getTime() - (1000 *45)//Less than 45 seconds old
+            lastKnownLocation.getTime() > new Date().getTime() - (1000 * 45)//Less than 45 seconds old
             && lastKnownLocation.getAccuracy() < 50//Accuracy
         ){
             //Log.d("Accurary", "" + lastKnownLocation.getAccuracy());

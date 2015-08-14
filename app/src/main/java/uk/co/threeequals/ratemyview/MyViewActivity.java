@@ -39,6 +39,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class MyViewActivity extends AppCompatActivity implements
@@ -565,7 +566,14 @@ public class MyViewActivity extends AppCompatActivity implements
         rmvOverlayItem.setNonce(nonce);
 
         rmvOverlayItem.save();//Save the upload incase it doesn't upload correctly
-        UploadManager.upload(getApplicationContext(), rmvOverlayItem);
+
+        /*
+        - - - - - - Hack alert - - - - -
+        SUGAR ORM isn't giving me the correct ID - Having to find the view in the Db
+         */
+        List<RmVOverlayItem> views = RmVOverlayItem.find(RmVOverlayItem.class, null, null, null, "ts DESC", "1");
+
+        UploadManager.upload(getApplicationContext(), views.get(0));
         finish();
     }
 }

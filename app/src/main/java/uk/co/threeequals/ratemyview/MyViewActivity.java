@@ -42,7 +42,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MyViewActivity extends AppCompatActivity implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
     String TAG = "MyViewActivity";
 
     private Uri mImageUri;
@@ -57,7 +57,6 @@ public class MyViewActivity extends AppCompatActivity implements
      * Stores parameters for requests to the FusedLocationProviderApi.
      */
     protected LocationRequest mLocationRequest;
-
 
     /**
      * Represents a geographical location.
@@ -174,7 +173,7 @@ public class MyViewActivity extends AppCompatActivity implements
                 savedInstanceState.getDouble("lng")
             );
         } else {
-            determineLocationGps();
+            //determineLocationGps();
         }
 	}
 
@@ -200,7 +199,6 @@ public class MyViewActivity extends AppCompatActivity implements
 
 	@Override
 	public void onPause() {
-        //locationManager.removeUpdates(locationListener);
 		super.onPause();
 
         // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
@@ -299,7 +297,6 @@ public class MyViewActivity extends AppCompatActivity implements
 		if(requestCode==PICTURE_REQUEST_CODE && resultCode==RESULT_OK){
 			resizeImage();
             galleryAddPic();
-            //determineLocationGps();//Grab location and heading
             startLocationUpdates();
 		} else {
 			finish();//Return to previous activity
@@ -312,8 +309,10 @@ public class MyViewActivity extends AppCompatActivity implements
     protected void startLocationUpdates() {
         // The final argument to {@code requestLocationUpdates()} is a LocationListener
         // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
+        if(mGoogleApiClient.isConnected()){
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+        }
     }
 
     /**
@@ -384,23 +383,7 @@ public class MyViewActivity extends AppCompatActivity implements
             //Log.d("Location", "Location set by Photo");
             position = new LatLng(latLong[0], latLong[1]);
         } else {
-            determineLocationGps();//Get position from GPS
-        }
-    }
-
-    private void determineLocationGps(){
-        //Check for stale location data first
-        String locationProvider = LocationManager.GPS_PROVIDER;
-        Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
-        if(lastKnownLocation != null &&
-            lastKnownLocation.getTime() > new Date().getTime() - (1000 * 45)//Less than 45 seconds old
-            && lastKnownLocation.getAccuracy() < 50//Accuracy
-        ){
-            //Log.d("Accurary", "" + lastKnownLocation.getAccuracy());
-            position = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-        } else {
-            // Register the listener with the Location Manager to receive location updates
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            //determineLocationGps();//Get position from GPS
         }
     }
 
@@ -474,25 +457,15 @@ public class MyViewActivity extends AppCompatActivity implements
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
+        position = new LatLng(location.getLatitude(), location.getLongitude());
+        if(location.getAccuracy() < 10) {
+            stopLocationUpdates();
+        }
         //mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         //updateUI();
         //Toast.makeText(this, getResources().getString(R.string.location_updated_message),
         //        Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
+        Log.d(TAG, location.toString());
     }
 
     @Override
@@ -565,6 +538,10 @@ public class MyViewActivity extends AppCompatActivity implements
             Toast.makeText(getBaseContext(),"Location could not be acquired",Toast.LENGTH_SHORT).show();
             return;
 		}
+
+        if(mCurrentLocation.getAccuracy() > 50){
+            //Warn the user they're uploading vague data
+        }
 
         RmVOverlayItem rmvOverlayItem = new RmVOverlayItem();
         rmvOverlayItem.setPosition(position);

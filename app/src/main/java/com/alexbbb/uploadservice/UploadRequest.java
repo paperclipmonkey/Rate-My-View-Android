@@ -1,12 +1,12 @@
 package com.alexbbb.uploadservice;
 
+import android.content.Context;
+import android.content.Intent;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import android.content.Context;
-import android.content.Intent;
 
 /**
  * Represents an upload request.
@@ -40,9 +40,9 @@ public class UploadRequest {
         this.uploadId = uploadId;
         notificationConfig = new UploadNotificationConfig();
         url = serverUrl;
-        filesToUpload = new ArrayList<FileToUpload>();
-        headers = new ArrayList<NameValue>();
-        parameters = new ArrayList<NameValue>();
+        filesToUpload = new ArrayList<>();
+        headers = new ArrayList<>();
+        parameters = new ArrayList<>();
     }
 
     /**

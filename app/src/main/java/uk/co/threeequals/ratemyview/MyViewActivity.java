@@ -44,14 +44,14 @@ import java.util.Locale;
 
 public class MyViewActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener{
-    String TAG = "MyViewActivity";
+    private final String TAG = "MyViewActivity";
 
     private Uri mImageUri;
     private LatLng position;
     private long heading;
     private LocationManager locationManager;
-    static final int PICTURE_REQUEST_CODE = 1;
-    protected GoogleApiClient mGoogleApiClient;
+    private static final int PICTURE_REQUEST_CODE = 1;
+    private GoogleApiClient mGoogleApiClient;
 
 
     /**
@@ -173,8 +173,6 @@ public class MyViewActivity extends AppCompatActivity implements
                 savedInstanceState.getDouble("lat"),
                 savedInstanceState.getDouble("lng")
             );
-        } else {
-            //determineLocationGps();
         }
 	}
 
@@ -383,8 +381,6 @@ public class MyViewActivity extends AppCompatActivity implements
         if (exif != null && exif.getLatLong(latLong)) {
             //Log.d("Location", "Location set by Photo");
             position = new LatLng(latLong[0], latLong[1]);
-        } else {
-            //determineLocationGps();//Get position from GPS
         }
     }
 
@@ -540,9 +536,9 @@ public class MyViewActivity extends AppCompatActivity implements
             return;
 		}
 
-        if(mCurrentLocation.getAccuracy() > 50){
-            //Warn the user they're uploading vague data
-        }
+//        if(mCurrentLocation.getAccuracy() > 50){
+//            //Warn the user they're uploading vague data
+//        }
 
         RmVOverlayItem rmvOverlayItem = new RmVOverlayItem();
         rmvOverlayItem.setPosition(position);

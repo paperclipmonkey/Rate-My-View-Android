@@ -29,27 +29,31 @@ public class TheirViewActivity extends AppCompatActivity {
 		Bundle extras = getIntent().getExtras();
 		
 		RmVOverlayItem item = extras.getParcelable("object");
-		
-		RatingBar rating = (RatingBar) findViewById(R.id.theirRating);
-		rating.setRating(item.getRating());
-	
-		TextView comments = (TextView) findViewById(R.id.theirComments);
 
-		String commentHtml = Html.fromHtml(item.getComments()).toString();
-		comments.setText(commentHtml);
-		
+		RatingBar rating = (RatingBar) findViewById(R.id.theirRating);
+		TextView comments = (TextView) findViewById(R.id.theirComments);
 		TextView ts = (TextView) findViewById(R.id.theirTs);
-		ts.setText("Uploaded: " + item.getTs());
-		
+		TextView words = (TextView) findViewById(R.id.theirWords);
+
+		if(item!= null) {
+			rating.setRating(item.getRating());
+
+
+			String commentHtml = Html.fromHtml(item.getComments()).toString();
+			comments.setText(commentHtml);
+
+			ts.setText("Uploaded: " + item.getTs());
+
+			words.setText("");//Blank
+			String[] wordList = item.getWordsArray();
+			for (String aWordList : wordList) {
+				words.setText(words.getText() + "\n" + aWordList);
+			}
+		}
 //		TextView heading = (TextView) findViewById(R.id.theirHeading);
 //		heading.setText("Heading: " + item.getHeading() + getString(R.string.degree_symbol));
 		
-		TextView words = (TextView) findViewById(R.id.theirWords);
-		words.setText("");//Blank
-		String[] wordList = item.getWordsArray();
-		for( int i = 0; i < wordList.length; i++) {
-			words.setText(words.getText() + "\n" + wordList[i]);
-		}
+
 		
 		img = (ImageView) findViewById(R.id.theirImage);
 //		img.setOnClickListener(

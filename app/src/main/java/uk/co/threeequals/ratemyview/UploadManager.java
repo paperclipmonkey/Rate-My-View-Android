@@ -23,7 +23,7 @@ import java.util.List;
  * Created by michaelwaterworth on 21/07/15.
  */
 public class UploadManager extends BroadcastReceiver {
-    final String TAGLISTEN = "Broadcast Receiver";
+    private final String TAGLISTEN = "Broadcast Receiver";
 
     @Override
     public void onReceive(Context context, Intent intent) {

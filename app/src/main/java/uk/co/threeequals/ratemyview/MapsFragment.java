@@ -248,7 +248,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             try {
                 is = new BufferedInputStream(connection.getInputStream());
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                String inputLine = "";
+                String inputLine;
                 while ((inputLine = br.readLine()) != null) {
                     sb.append(inputLine);
                 }
